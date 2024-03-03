@@ -7,6 +7,7 @@ using namespace std;
 class Solution {
 public:
   vector<int> twoSum(vector<int> &nums, int target) {
+    /// 经典的空间换时间，使用map保存两数的差值
     std::unordered_map<int, int> tmp;   // key: target - i; 如果i+j=target, 则 j=target - i, j在map中
     for(int index = 0; index < nums.size(); ++index){
         auto itr = tmp.find(nums[index]);
