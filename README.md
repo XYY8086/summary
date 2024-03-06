@@ -72,3 +72,64 @@
 此时我们能计算出 ptr1的{left_max, x}, ptr2的{y, right_max},已知ptr1<ptr2, x >= right_max, y>=left_max 若此时left_max < right_max,则 left_max < right_max <=x,
 也就是说ptr1位置的墙高为left_max,同理若 left_max >= right_max，则 y>=left_max >= right_max， ptr2的墙高为 right_max
 ```
+
+
+### 08 最长不重复的字串
+
+[最长不重复的字串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/description/?envType=study-plan-v2&envId=top-100-liked)
+
+```text
+输入: s = "abcabcbb"
+输出: 3 
+解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+
+在统计到重复元素时，此时的遍历位置应该重置到该位置的下一位，同时子串进行删除或者标记。例如遍历到index=3时发现右重复字符'a'，此时字串起点应该向前移动到index=2位置
+```
+```C++
+class Solution {
+public:
+  int lengthOfLongestSubstring(string s) {
+    if (s.empty()) {
+      return 0;
+    }
+    //  key;s中的元素ele val:ele最后出现的位置
+    std::unordered_map<char, int> count; 
+    int max_val = 1;
+    int left = 0; // 当前最长不重复串的起始位置
+    for (int index = 0; index < s.size(); ++index) {
+      auto itr = count.find(s[index]);
+      // 出现重复,此时需要移动左侧指针,移动到重复元素的下一个位置
+      if (itr != count.end()) {
+        // a b b a, 重复元素的下标有可能在left左侧，所以这里取了一个max
+        left = std::max(itr->second + 1, left);
+      }
+      count[s[index]] = index;
+      max_val = std::max(max_val, index - left + 1);
+    }
+    return max_val;
+  }
+
+  int solution1(string s) {
+    std::vector<char> count;
+    int max_val = 0;
+    for (char ele : s) {
+      auto itr = std::find(count.begin(), count.end(), ele);
+      // 如果发现重复,则从重复元素的下一个位置开始重新计算
+      if (itr != count.end()) {
+        count.erase(count.begin(), ++itr);
+      }
+      count.push_back(ele);
+      max_val = std::max(max_val, int(count.size()));
+    }
+    return max_val;
+  }
+};
+```
+
+### 09 寻找所有的字母异位词
+
+[寻找所有的字母异位词](https://leetcode.cn/problems/find-all-anagrams-in-a-string/description/?envType=study-plan-v2&envId=top-100-liked)
+
+```text
+使用map或者vector统计目标字符的词频,判断map或vector是否相等也就是判断两个串是否为异位词。窗口大小固定，每次出一个元素进入一个元素，相应的修改词频
+```
