@@ -133,3 +133,143 @@ public:
 ```text
 使用map或者vector统计目标字符的词频,判断map或vector是否相等也就是判断两个串是否为异位词。窗口大小固定，每次出一个元素进入一个元素，相应的修改词频
 ```
+
+### 10 和为k的子数组
+
+[和为k的子数组](https://leetcode.cn/problems/subarray-sum-equals-k/?envType=study-plan-v2&envId=top-100-liked)
+
+```
+给你一个整数数组 nums 和一个整数 k ，请你统计并返回 该数组中和为 k 的子数组的个数。
+子数组是数组中元素的连续非空序列。
+输入：nums = [1,2,3], k = 3
+输出：2 存在{1, 2} {3}两个序列
+```
+
+#### 1.暴力解法
+直接计算所有子序列的和,此时的时间复杂度为n^2
+```C++
+int subarraySum(vector<int> &nums, int k) {
+  int ret = 0;
+  for (int i = 0; i < nums.size(); ++i) {
+    // 计算从i开始的所有子序列的和
+    int sum = 0;
+    for (int j = i; j < nums.size(); ++j) {
+      sum += nums[j];
+      if (sum == k) {
+        ++ret;
+      }
+    }
+  }
+  return ret;
+}
+```
+
+#### 2.保存求和结果
+
+显然,在暴力解法中我们存在多次计算子序列和,i < j < k 时, k开始的子序列和被计算了多次。
+那么我们想到计算一次保存起来dp[i] 表示[i, END] i开始到结尾的子序列和。
+**若存在一个区间 [i,j]的和为t,则右这样的关系 dp[i]-dp[j]+nums[j]=t,其中 i<=j**,那么显然我们从后向前遍历一次即可
+
+![[i,j]区间的和](./leetcode/img/连续子序列和.png)
+
+
+```C++
+int subarraySum2(vector<int> &nums, int k) {
+  int ret = 0;
+  std::vector<int> dp(nums.size()); // dp[i] 表示从i开始到结尾的子序列长度
+  int sum = 0;
+  for (int i = nums.size() - 1; i >= 0; --i) {
+    sum += nums[i];
+    dp[i] = sum;
+  }
+
+  for (int index = nums.size() - 1; index >= 0; --index) {
+    int diff = dp[index] + k - nums[index];
+    // dp[i]=dp[j]+k-nums[j],其中i<j, 显然dp[i]的值可以直接求出来，剩下的就是判断dp[i]是否真的在求和数组中
+    auto itr = std::find(dp.begin(), dp.end(), diff);
+    if (itr != dp.end() && (itr - dp.begin()) <= index) {
+      ++ret;
+    }
+  }
+  return ret;
+}
+```
+
+#### 3.使用map代替数组
+在方法2中我们使用了数组保存求和的结果，但是在从右向左遍历时，每一次都要在数组中查找是否真的存在这个值，以及这个值的下标是否符合条件。对于查找问题，显然我们更希望通过map实现
+
+我们需要解决的问题有下面几个:
+- map是保存求和结果的,所以key是和，那么val是什么呢
+- 我们需要保存下标信息，帮助我们判断 i < j 这种关系
+- 我们在遍历的时候需要根据下标得到求和结果
+最简单的想法，map key保存的是和,val保存的是子序列的起始位置(可能多个子序列的和相同)；同时使用一个数组保存求和结果，便于根据下标得到和
+
+```c++
+int subarraySum3(vector<int>& nums, int k) {
+    int ret = 0;
+    std::unordered_map<int, std::vector<int>> count; // key:sum val:子序列的起始位置
+    std::vector<int> sum_vec(nums.size(), 0);
+    int sum = 0;
+    for(int i = nums.size() - 1; i >=0 ; --i){
+        sum += nums[i];
+        count[sum].push_back(i);
+        sum_vec[i]=sum;
+    }
+
+    for(int index = nums.size() - 1; index >=0; --index){
+        int diff = sum_vec[index] + k - nums[index];
+        auto itr = count.find(diff);
+        if(itr == count.end()){
+            continue;
+        }
+        for(auto ele : itr->second){
+            ret += (ele <= index);
+        }
+    }
+    return ret;
+}
+```
+
+#### 4.优化之后的一次遍历
+但从方法3的写法上看，显然 sum_vec数组是多余的，因为从右向左遍历时，我们可以顺便计算出dp[i]
+```C++
+int ret = 0;
+std::unordered_map<int, std::vector<int>> count; // key:sum val:子序列的起始位置
+int sum = 0;
+for(int i = nums.size() - 1; i >=0 ; --i){
+    sum += nums[i];
+    count[sum].push_back(i);
+
+}
+
+int sum_vec = 0;
+for(int index = nums.size() - 1; index >=0; --index){
+    sum_vec += nums[index];
+    int diff = sum_vec + k - nums[index];
+    auto itr = count.find(diff);
+    if(itr == count.end()){
+        continue;
+    }
+    for(auto ele : itr->second){
+        ret += (ele <= index);
+    }
+}
+return ret;
+```
+
+进一步我们想，从右到左遍历，我们希望 i < j, 也就是说满足条件的 i 在遍历时可能还没办法计算出来。那么我们先把我们的期望值存起来，再向左计算的过程中看看是否出现了期望值
+```C++
+int ret = 0;
+int current_sum = 0;
+std::unordered_map<int , int> predicted;  // key 希望的子序列和, val:有多少个位置希望前方能出现这个和
+for(int index = nums.size() - 1; index >=0; --index){
+    current_sum += nums[index]; // current_sum表示的是 [index, END]子序列的和，也就是dp[index]
+    int diff = current_sum + k - nums[index]; // diff 表示满足条件时，dp[x]的值，其中 0 <=x <=index,因为我们的迭代顺序,x显然时满足[0, index]的
+    predicted[diff]++;  // 将这个值放入期望map中
+    auto itr = predicted.find(current_sum);
+    if(itr != predicted.end()){ // 当前的dp[index]能够满足 [index,END]的期望
+        ret += itr->second;
+    }
+}
+return ret;
+```
