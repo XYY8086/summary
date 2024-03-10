@@ -343,3 +343,48 @@ for (int right = 0; right < s.size(); ++right) {
 }
 return start_pos < 0 ? "" : s.substr(start_pos, len);
 ```
+
+### 13 最大子数组和
+
+[最大子数组和](https://leetcode.cn/problems/maximum-subarray/description/?envType=study-plan-v2&envId=top-100-liked)
+
+```text
+输入：nums = [-2,1,-3,4,-1,2,1,-5,4]
+输出：6
+解释：连续子数组 [4,-1,2,1] 的和最大，为 6 。
+```
+
+- 思路1
+
+又是子序列的问题,首先想到的是暴力求解,求和所有子序列的和。
+```C++
+int maxSubArray(vector<int> &nums) {
+  int ret = INT_MIN;
+  for (int i = 0; i < nums.size(); ++i) {
+    int sum = 0;
+    for (int j = i; j < nums.size(); ++j) {
+      sum += nums[j];
+      ret = std::max(ret, sum);
+    }
+  }
+  return ret;
+}
+```
+
+- 思路2
+
+暴力求解的时候，由于我们是从左到右遍历,对于序列[i, j]会重复计算多次这个序列的和。那么我们自然想到使用数组保存dp[i][j]保存[i,j]序列的和，
+但是即便是这样。在第二层循环中我们需要找到dp[i, j], i<=j<=nums.size()==END 中的最大值，显然时间复杂度没有变化。所以我们更想更快的知道[i，END]范围内最大和的子序列.
+而[i,END]范围内的最大和S(i)显然依赖于[i-1,END]范围内的最大和S(i-1),可见一个有状态依赖的动态规划出来了。
+dp[i]表示[i,END]最大和,则dp[i] = nums[i], dp[i-1] <0,否则dp[i] = dp[i-1]+nums[i]
+```C++
+int maxSubArray(vector<int>& nums) {
+  int ret = nums.back();
+  int last_sum = nums.back();
+  for(int index = nums.size() - 2; index >=0; --index){
+      last_sum = nums[index] + (last_sum < 0 ? 0 : last_sum);
+      ret = std::max(last_sum, ret);
+  }
+  return ret;
+}
+``` 
