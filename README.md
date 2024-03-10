@@ -299,3 +299,47 @@ return ret;
 
 当前也可以使用大根堆实现,取堆顶元素时判断是否超出窗口
 ```
+
+### 12 最小覆盖子串
+
+[最小覆盖子串](https://leetcode.cn/problems/minimum-window-substring/?envType=study-plan-v2&envId=top-100-liked)
+
+```text
+输入：s = "ADOBECODEBANC", t = "ABC"
+输出："BANC"
+解释：最小覆盖子串 "BANC" 包含来自字符串 t 的 'A'、'B' 和 'C'。
+```
+
+暴力解法中,验证每个子序列,存在一些字串的信息被重复计算的情况。而使用滑动窗口,当前子串的信息始终包含在窗口内,移动滑动时更新这些信息，无需双重循环。
+```C++
+std::unordered_map<char, int> count; // 目标串的词频
+for (char c : t) {
+  ++count[c];
+}
+
+int start_pos = -1;                // 符合条件的子串起始位置
+int len = INT_MAX;                 // 符合条件的子串长度
+std::unordered_map<char, int> pre; // map中只存放s中的字符统计
+
+int left = 0; // left指向窗口左边,right指向窗口右边
+for (int right = 0; right < s.size(); ++right) {
+  if (!count.count(s[right])) {
+    continue;
+  }
+  ++pre[s[right]];
+  // 检测当前当前窗口是否满足要求，不能直接使用map
+  // .operator==(),实际上在窗口内ele出现次数大于target的中ele的词频也是OK的
+  while (equal(count, pre) && left <= right) {
+    if (right - left + 1 < len) {
+      len = right - left + 1;
+      start_pos = left;
+    }
+    // 左指针向右移动,同时修改词频map
+    if (pre.count(s[left])) {
+      --pre[s[left]];
+    }
+    ++left;
+  }
+}
+return start_pos < 0 ? "" : s.substr(start_pos, len);
+```
