@@ -1,16 +1,35 @@
-# 后端开发
+- [leetcode100](#leetcode100)
+  - [01 两数之和](#01-两数之和)
+  - [02 字母异或词分组](#02-字母异或词分组)
+  - [03 最长连续数字序列](#03-最长连续数字序列)
+  - [04 移动0元素](#04-移动0元素)
+  - [05 盛最多水的容器](#05-盛最多水的容器)
+  - [06 三数之和](#06-三数之和)
+  - [07 接雨水](#07-接雨水)
+  - [08 最长不重复的字串](#08-最长不重复的字串)
+  - [09 寻找所有的字母异位词](#09-寻找所有的字母异位词)
+  - [10 和为k的子数组](#10-和为k的子数组)
+    - [1.暴力解法](#1暴力解法)
+    - [2.保存求和结果](#2保存求和结果)
+    - [3.使用map代替数组](#3使用map代替数组)
+    - [4.优化之后的一次遍历](#4优化之后的一次遍历)
+  - [11 滑动窗口内的最大值](#11-滑动窗口内的最大值)
+  - [12 最小覆盖子串](#12-最小覆盖子串)
+  - [13 最大子数组和](#13-最大子数组和)
+    - [暴力求解](#暴力求解)
+    - [动态规划](#动态规划)
 
-## leetcode
+# leetcode100
 
-### 01 两数之和
+## 01 两数之和
 
 [两数之和](https://leetcode.cn/problems/two-sum/description/?envType=study-plan-v2&envId=top-100-liked)
 
-### 02 字母异或词分组
+## 02 字母异或词分组
 
 [字母异或词分组](https://leetcode.cn/problems/group-anagrams/description/?envType=study-plan-v2&envId=top-100-liked)
 
-### 03 最长连续数字序列
+## 03 最长连续数字序列
 
 [最长连续序列](https://leetcode.cn/problems/longest-consecutive-sequence/?envType=study-plan-v2&envId=top-100-liked)
 
@@ -24,7 +43,7 @@
 方法2: dp[k]表示k元素所在最长序列长度, dp[k]=dp[k-1]+dp[k+1], 每次更新dp时只需要更新当前位置、新拼接序列的起始和结束位置。重复元素不再进行计算
 ```
 
-### 04 移动0元素
+## 04 移动0元素
 
 [移动零](https://leetcode.cn/problems/move-zeroes/submissions/507246693/?envType=study-plan-v2&envId=top-100-liked)
 
@@ -37,7 +56,7 @@
 慢指针指向0元素位置,快指针指向非0元素位置
 ```
 
-### 05 盛最多水的容器
+## 05 盛最多水的容器
 
 [盛最多水的容器](https://leetcode.cn/problems/container-with-most-water/description/?envType=study-plan-v2&envId=top-100-liked)
 
@@ -50,7 +69,7 @@
   若移动短边 -> (1, 6)(容量变小)  (4, 6)(容量变大) (8, 6)(容量变大)
 ```
 
-### 06 三数之和
+## 06 三数之和
 
 [三数之和](https://leetcode.cn/problems/3sum/description/?envType=study-plan-v2&envId=top-100-liked)
 
@@ -59,7 +78,7 @@
 关键在于认识到先对数组排序，接着再递增数组上使用双指针做两数之和，同时注意在找到一组元素时，最相邻元素去重。
 ```
 
-### 07 接雨水
+## 07 接雨水
 
 [接雨水](https://leetcode.cn/problems/trapping-rain-water/description/?envType=study-plan-v2&envId=top-100-liked)
 
@@ -74,7 +93,7 @@
 ```
 
 
-### 08 最长不重复的字串
+## 08 最长不重复的字串
 
 [最长不重复的字串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/description/?envType=study-plan-v2&envId=top-100-liked)
 
@@ -126,7 +145,7 @@ public:
 };
 ```
 
-### 09 寻找所有的字母异位词
+## 09 寻找所有的字母异位词
 
 [寻找所有的字母异位词](https://leetcode.cn/problems/find-all-anagrams-in-a-string/description/?envType=study-plan-v2&envId=top-100-liked)
 
@@ -134,7 +153,7 @@ public:
 使用map或者vector统计目标字符的词频,判断map或vector是否相等也就是判断两个串是否为异位词。窗口大小固定，每次出一个元素进入一个元素，相应的修改词频
 ```
 
-### 10 和为k的子数组
+## 10 和为k的子数组
 
 [和为k的子数组](https://leetcode.cn/problems/subarray-sum-equals-k/?envType=study-plan-v2&envId=top-100-liked)
 
@@ -145,7 +164,7 @@ public:
 输出：2 存在{1, 2} {3}两个序列
 ```
 
-#### 1.暴力解法
+### 1.暴力解法
 直接计算所有子序列的和,此时的时间复杂度为n^2
 ```C++
 int subarraySum(vector<int> &nums, int k) {
@@ -164,7 +183,7 @@ int subarraySum(vector<int> &nums, int k) {
 }
 ```
 
-#### 2.保存求和结果
+### 2.保存求和结果
 
 显然,在暴力解法中我们存在多次计算子序列和,i < j < k 时, k开始的子序列和被计算了多次。
 那么我们想到计算一次保存起来dp[i] 表示[i, END] i开始到结尾的子序列和。
@@ -195,7 +214,7 @@ int subarraySum2(vector<int> &nums, int k) {
 }
 ```
 
-#### 3.使用map代替数组
+### 3.使用map代替数组
 在方法2中我们使用了数组保存求和的结果，但是在从右向左遍历时，每一次都要在数组中查找是否真的存在这个值，以及这个值的下标是否符合条件。对于查找问题，显然我们更希望通过map实现
 
 我们需要解决的问题有下面几个:
@@ -230,7 +249,7 @@ int subarraySum3(vector<int>& nums, int k) {
 }
 ```
 
-#### 4.优化之后的一次遍历
+### 4.优化之后的一次遍历
 但从方法3的写法上看，显然 sum_vec数组是多余的，因为从右向左遍历时，我们可以顺便计算出dp[i]
 ```C++
 int ret = 0;
@@ -274,7 +293,7 @@ for(int index = nums.size() - 1; index >=0; --index){
 return ret;
 ```
 
-### 11 滑动窗口内的最大值
+## 11 滑动窗口内的最大值
 
 [滑动窗口内的最大值](https://leetcode.cn/problems/sliding-window-maximum/?envType=study-plan-v2&envId=top-100-liked)
 
@@ -300,7 +319,7 @@ return ret;
 当前也可以使用大根堆实现,取堆顶元素时判断是否超出窗口
 ```
 
-### 12 最小覆盖子串
+## 12 最小覆盖子串
 
 [最小覆盖子串](https://leetcode.cn/problems/minimum-window-substring/?envType=study-plan-v2&envId=top-100-liked)
 
@@ -344,7 +363,7 @@ for (int right = 0; right < s.size(); ++right) {
 return start_pos < 0 ? "" : s.substr(start_pos, len);
 ```
 
-### 13 最大子数组和
+## 13 最大子数组和
 
 [最大子数组和](https://leetcode.cn/problems/maximum-subarray/description/?envType=study-plan-v2&envId=top-100-liked)
 
@@ -354,7 +373,7 @@ return start_pos < 0 ? "" : s.substr(start_pos, len);
 解释：连续子数组 [4,-1,2,1] 的和最大，为 6 。
 ```
 
-- 思路1
+### 暴力求解
 
 又是子序列的问题,首先想到的是暴力求解,求和所有子序列的和。
 ```C++
@@ -371,7 +390,7 @@ int maxSubArray(vector<int> &nums) {
 }
 ```
 
-- 思路2
+### 动态规划
 
 暴力求解的时候，由于我们是从左到右遍历,对于序列[i, j]会重复计算多次这个序列的和。那么我们自然想到使用数组保存dp[i][j]保存[i,j]序列的和，
 但是即便是这样。在第二层循环中我们需要找到dp[i, j], i<=j<=nums.size()==END 中的最大值，显然时间复杂度没有变化。所以我们更想更快的知道[i，END]范围内最大和的子序列.
