@@ -23,6 +23,9 @@
     - [内存拷贝](#内存拷贝)
     - [多次反转](#多次反转)
   - [16 除自身之外的累积结果](#16-除自身之外的累积结果)
+  - [17 数组中缺失的第一个正数](#17-数组中缺失的第一个正数)
+    - [hash表](#hash表)
+    - [将元素放到正确位置上](#将元素放到正确位置上)
 
 # leetcode100
 
@@ -503,3 +506,46 @@ vector<int> productExceptSelf(vector<int>& nums) {
     return tail_results;
 }
 ```
+
+## 17 数组中缺失的第一个正数
+
+[数组中缺失的第一个正数](https://leetcode.cn/problems/first-missing-positive/description/?envType=study-plan-v2&envId=top-100-liked)
+
+```text
+给你一个未排序的整数数组 nums ，请你找出其中没有出现的最小的正整数。
+输入：nums = [3,4,-1,1]
+输出：2
+解释：1 在数组中，但 2 没有。
+```
+
+### hash表
+
+数组元素存入hash表,方便O(1)时间查找某个元素是否缺失
+
+
+### 将元素放到正确位置上
+
+对于一个长度为n的数组,合理的数值范围是[1, n],那么我们通过遍历数组将array[i] 不断交换尝试放到[i+1]位置上.最后遍历数组查看哪个位置不满足 array[i] = i+1
+
+```C++
+for (int index = 0; index < nums.size(); ++index) {
+  // 当前位置不满足 nums[i] == i + 1,尝试交换到正确位置上
+  while (nums[index] != index + 1) {
+    // 为防止因为缺失数据引起的无限循环,需要提前终止
+    if (nums[index] <= 0 || nums[index] > nums.size() ||
+        nums[index] == nums[nums[index] - 1]) {
+      break;
+    }
+    // 交换 nums[i] 到其理想位置nums[i] - 1 上
+    std::swap(nums[index], nums[nums[index] - 1]);
+  }
+}
+for (int index = 0; index < nums.size(); ++index) {
+  if (nums[index] != index + 1) {
+    return index + 1;
+  }
+}
+return nums.size() + 1;
+```
+
+
