@@ -18,6 +18,7 @@
   - [13 最大子数组和](#13-最大子数组和)
     - [暴力求解](#暴力求解)
     - [动态规划](#动态规划)
+  - [14 合并区间](#14-合并区间)
 
 # leetcode100
 
@@ -407,3 +408,15 @@ int maxSubArray(vector<int>& nums) {
   return ret;
 }
 ``` 
+
+## 14 合并区间
+
+[合并区间](https://leetcode.cn/problems/merge-intervals/description/?envType=study-plan-v2&envId=top-100-liked)
+
+```text
+输入：intervals = [[1,3],[2,6],[8,10],[15,18]]
+输出：[[1,6],[8,10],[15,18]]
+解释：区间 [1,3] 和 [2,6] 重叠, 将它们合并为 [1,6].
+```
+
+按照数组中的左边界进行排序,然后依次合并。
