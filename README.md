@@ -19,6 +19,9 @@
     - [暴力求解](#暴力求解)
     - [动态规划](#动态规划)
   - [14 合并区间](#14-合并区间)
+  - [15 轮转数组](#15-轮转数组)
+    - [内存拷贝](#内存拷贝)
+    - [多次反转](#多次反转)
 
 # leetcode100
 
@@ -420,3 +423,51 @@ int maxSubArray(vector<int>& nums) {
 ```
 
 按照数组中的左边界进行排序,然后依次合并。
+
+
+## 15 轮转数组
+
+[轮转数组](https://leetcode.cn/problems/rotate-array/description/?envType=study-plan-v2&envId=top-100-liked)
+
+```text
+输入: nums = [1,2,3,4,5,6,7], k = 3
+输出: [5,6,7,1,2,3,4]
+解释:
+向右轮转 1 步: [7,1,2,3,4,5,6]
+向右轮转 2 步: [6,7,1,2,3,4,5]
+向右轮转 3 步: [5,6,7,1,2,3,4]
+```
+
+### 内存拷贝
+
+![内存拷贝](./leetcode/img/轮转数组.png)
+
+需要提前将尾部的数据保存起来。
+```C++
+void rotate1(vector<int> &nums, int k) {
+  if (nums.empty() || ((k % nums.size()) == 0)) {
+    return;
+  }
+  int res = k % nums.size();
+  std::vector<int> tail_nums(nums.begin() + nums.size() - res, nums.end());
+  // 注意这里的nums.data() 返回的是 int*, 而第三个参数是字节为单位
+  memmove(nums.data() + res, nums.data(), (nums.size() - res) * sizeof(int));
+  memmove(nums.data(), tail_nums.data(), tail_nums.size() * sizeof(int));
+}
+```
+
+### 多次反转
+
+```C++
+void rotate(vector<int> &nums, int k) {
+  if (nums.empty() || ((k % nums.size()) == 0)) {
+    return;
+  }
+  int res = k % nums.size();
+  // 首先全部反转
+  reverse(nums, 0, nums.size() - 1);
+  // 然后依次反转前后两端内容
+  reverse(nums, 0, res - 1);
+  reverse(nums, res, nums.size() - 1);
+}
+```
