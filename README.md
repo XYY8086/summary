@@ -22,6 +22,7 @@
   - [15 轮转数组](#15-轮转数组)
     - [内存拷贝](#内存拷贝)
     - [多次反转](#多次反转)
+  - [16 除自身之外的累积结果](#16-除自身之外的累积结果)
 
 # leetcode100
 
@@ -469,5 +470,36 @@ void rotate(vector<int> &nums, int k) {
   // 然后依次反转前后两端内容
   reverse(nums, 0, res - 1);
   reverse(nums, res, nums.size() - 1);
+}
+```
+
+## 16 除自身之外的累积结果
+
+[除自身以外数组的乘积](https://leetcode.cn/problems/product-of-array-except-self/description/?envType=study-plan-v2&envId=top-100-liked)
+
+```text
+输入: nums = [1,2,3,4]
+输出: [24,12,8,6]
+```
+
+dp[i] 保存 [i, END]的累积结果。然后从左到右遍历的时候可以计算[0, i]的累积结果, 两者相乘得到该位置上的结果。
+
+```C++
+vector<int> productExceptSelf(vector<int>& nums) {
+    vector<int> tail_results(nums.size(), nums.back());
+    for(int index = nums.size() -2; index >=0; --index){
+        tail_results[index] = tail_results[index+1]*nums[index];
+    }
+
+    int head_result  = 1;
+    // 这里也可以使用额外的数组保存最后的结果；但是我们注意到 每次计算results[index]时只使用了tail_results[index+1]，也就是可以直接复用tail_results
+    for(int index = 0; index < nums.size(); ++index){
+        int right_val = index + 1 < nums.size() ? tail_results[index+1] : 1;
+        int left_val =  index - 1 >= 0 ? head_result : 1;
+        tail_results[index] = right_val * left_val;
+        head_result *= nums[index];
+    }
+
+    return tail_results;
 }
 ```
