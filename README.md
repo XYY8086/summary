@@ -26,6 +26,9 @@
   - [17 数组中缺失的第一个正数](#17-数组中缺失的第一个正数)
     - [hash表](#hash表)
     - [将元素放到正确位置上](#将元素放到正确位置上)
+  - [18 矩阵置零](#18-矩阵置零)
+    - [使用额外标记数组](#使用额外标记数组)
+    - [在原数组中存储标记信息](#在原数组中存储标记信息)
 
 # leetcode100
 
@@ -548,4 +551,96 @@ for (int index = 0; index < nums.size(); ++index) {
 return nums.size() + 1;
 ```
 
+## 18 [矩阵置零](https://leetcode.cn/problems/set-matrix-zeroes/description/?envType=study-plan-v2&envId=top-100-liked)
 
+
+给定一个 m x n 的矩阵，如果一个元素为 0 ，则将其所在行和列的所有元素都设为 0 。请使用 原地 算法。
+
+### 使用额外标记数组
+
+使用两个数组分别记录哪些行和哪些列存在0元素,然后一次遍历矩阵,若该位置有对应的行列0标记,则置0
+```C++
+void setZeroes(std::vector<std::vector<int>> &matrix) {
+  if (matrix.empty()) {
+    return;
+  }
+  // 标记哪些行和哪些列存在0元素，空间复杂度O(m+n),时间复杂度O(m*n)
+  std::vector<bool> row_flags(matrix.size(), false);
+  std::vector<bool> col_flags(matrix[0].size(), false);
+
+  for (int row = 0; row < matrix.size(); ++row) {
+    for (int col = 0; col < matrix[0].size(); ++col) {
+      row_flags[row] = row_flags[row] || (matrix[row][col] == 0);
+      col_flags[col] = col_flags[col] || (matrix[row][col] == 0);
+    }
+  }
+
+  for (int row = 0; row < matrix.size(); ++row) {
+    for (int col = 0; col < matrix[0].size(); ++col) {
+      // 该元素所在的行或者列存在0元素,则该元素置零
+      if (row_flags[row] || col_flags[col]) {
+        matrix[row][col] = 0;
+      }
+    }
+  }
+}
+```
+
+### 在原数组中存储标记信息
+
+使用元组中的某一行存储哪些列有0标记,使用某一列存储哪些行有0标记。此时有个问题,用于标记的这个行和列是无法表达自身是否具有0元素的，所以需要额外使用两个变量记录这个信息。
+```C++
+void setZeroes(std::vector<std::vector<int>> &matrix) {
+  if (matrix.empty()) {
+    return;
+  }
+  // 我们能否把标记数组放到原矩阵中？
+  // 由于后续第一行和第一列需要存储标记位,最后无法确定第一行，第一列本身是否包含0,所以这项信息需要存储下来
+  bool set_row = false, set_col = false;
+  // 遍历第一列,看看第一列自身是否存在0元素
+  for (int index = 0; index < matrix.size(); ++index) {
+    if (matrix[index][0] == 0) {
+      set_col = true;
+      break;
+    }
+  }
+  // 遍历第一行,看看第一行自身是否存在0元素
+  for (int index = 0; index < matrix[0].size(); ++index) {
+    if (matrix[0][index] == 0) {
+      set_row = true;
+      break;
+    }
+  }
+
+  // 遍历除去标记行列的其他位置,设置标记位，储存在原矩阵的第一行和第一列
+  for (int row = 1; row < matrix.size(); ++row) {
+    for (int col = 1; col < matrix[0].size(); ++col) {
+      if (matrix[row][col] == 0) {
+        matrix[0][col] = 0; // 存储哪些列有0
+        matrix[row][0] = 0; // 存储哪些行有0
+      }
+    }
+  }
+
+  for (int row = 1; row < matrix.size(); ++row) {
+    for (int col = 1; col < matrix[0].size(); ++col) {
+      // 该元素所在的行或者列存在0元素,则该元素置零
+      if (matrix[row][0] == 0 || matrix[0][col] == 0) {
+        matrix[row][col] = 0;
+      }
+    }
+  }
+  // 判断第一列
+  if (set_col) {
+    for (int index = 0; index < matrix.size(); ++index) {
+      matrix[index][0] = 0;
+    }
+  }
+  // 判断第一行
+  if (set_row) {
+    for (int index = 0; index < matrix[0].size(); ++index) {
+      matrix[0][index] = 0;
+    }
+  }
+}
+```
