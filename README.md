@@ -29,6 +29,7 @@
   - [18 矩阵置零](#18-矩阵置零)
     - [使用额外标记数组](#使用额外标记数组)
     - [在原数组中存储标记信息](#在原数组中存储标记信息)
+  - [19 螺旋矩阵](#19-螺旋矩阵)
 
 # leetcode100
 
@@ -642,5 +643,51 @@ void setZeroes(std::vector<std::vector<int>> &matrix) {
       matrix[0][index] = 0;
     }
   }
+}
+```
+
+## 19 [螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/description/?envType=study-plan-v2&envId=top-100-liked)
+
+给你一个 m 行 n 列的矩阵 matrix ，请按照 顺时针螺旋顺序 ，返回矩阵中的所有元素。
+
+需要注意边界条件的判断。大循环内的前两次小循环,大循环保证上下和左右关系都是合理的，所以第一次小循环不用做额外的条件判断。
+第二个小循环,自身能保证上下关系的合理,而left,right此时并未发生变化,所以左右关系也是满足的，因为也不用做额外判断。
+第三个小循环,自身能保证左右关系的合理,而此时up值已经发生变动，是无法保证 up < down的,所以在第三个小循环开始之前需要额外一部判断上下关系是否合理,
+同理第四个循环需要检查左右关系是否合理。
+```C++
+std::vector<int> spiralOrder(std::vector<std::vector<int>> &matrix) {
+  int left = 0, right = matrix[0].size() - 1, up = 0, down = matrix.size() - 1;
+  std::vector<int> ret;
+  while (left <= right && up <= down) {
+    // 遍历当前行(第up行,从左到右), [left, right]
+    for (int index = left; index <= right; ++index) {
+      ret.push_back(matrix[up][index]);
+    }
+    ++up;
+    // 遍历第right列,从上到下
+    for (int index = up; index <= down; ++index) {
+      ret.push_back(matrix[index][right]);
+    }
+    --right;
+    // 遍历第down行,从右到左.
+    // 此时循环只关注左右关系,并没有注意到上下关系(up已经发生变化)的限制,避免出现重复此时要判断上下关系是否合理
+    if (up > down) {
+      break;
+    }
+    for (int index = right; index >= left; --index) {
+      ret.push_back(matrix[down][index]);
+    }
+    --down;
+    // 遍历第left列,从下到上.
+    // 此时循环只关注上下关系,并没有注意到左右关系(right已发生变化)的限制,避免出现重复此时要判断左右关系是否合理
+    if (left > right) {
+      break;
+    }
+    for (int index = down; index >= up; --index) {
+      ret.push_back(matrix[index][left]);
+    }
+    ++left;
+  }
+  return ret;
 }
 ```
