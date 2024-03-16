@@ -30,6 +30,7 @@
     - [使用额外标记数组](#使用额外标记数组)
     - [在原数组中存储标记信息](#在原数组中存储标记信息)
   - [19 螺旋矩阵](#19-螺旋矩阵)
+  - [20 旋转图像](#20-旋转图像)
 
 # leetcode100
 
@@ -691,3 +692,31 @@ std::vector<int> spiralOrder(std::vector<std::vector<int>> &matrix) {
   return ret;
 }
 ```
+
+## 20 [旋转图像](https://leetcode.cn/problems/rotate-image/description/?envType=study-plan-v2&envId=top-100-liked)
+
+给定一个 n × n 的二维矩阵 matrix 表示一个图像。请你将图像顺时针旋转 90 度。要求原地旋转
+![矩阵旋转](https://assets.leetcode.com/uploads/2020/08/28/mat2.jpg)
+
+首先对于方阵中的某一点matrix[i][j],顺时针旋转90°后的点坐标为 (n-j-1, i). 则我们可以从外层到内层,依次交换这些点
+```C++
+void rotate(std::vector<std::vector<int>> &matrix) {
+  int n = matrix.size(); // 方阵
+  // 一圈一圈的遍历
+  for (int current_row = 0; current_row < n / 2; ++current_row) {
+    for (int current_col = current_row; current_col < n - current_row - 1;
+         ++current_col) {
+      int tmp = matrix[current_row][current_col];
+      matrix[current_row][current_col] =
+          matrix[n - current_col - 1][current_row];
+      matrix[n - current_col - 1][current_row] =
+          matrix[n - current_row - 1][n - current_col - 1];
+      matrix[n - current_row - 1][n - current_col - 1] =
+          matrix[current_col][n - current_row - 1];
+      // matrix[current_col][n - current_row - 1] =
+      // matrix[current_row][current_col];
+      matrix[current_col][n - current_row - 1] = tmp;
+    }
+  }
+}
+``` 
