@@ -39,6 +39,7 @@
   - [26 环形链表的入口](#26-环形链表的入口)
   - [27 合并两个有序链表](#27-合并两个有序链表)
   - [28 两数相加](#28-两数相加)
+  - [29 删除链表中倒数第n个节点](#29-删除链表中倒数第n个节点)
 
 # leetcode100
 
@@ -938,5 +939,31 @@ ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
   }
 
   return head->next;
+}
+```
+
+
+## 29 [删除链表中倒数第n个节点](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/description/?envType=study-plan-v2&envId=top-100-liked)
+
+假设链表长度为len,我们知道倒数第n个节点,实际上就是删除第len-n个节点,也就是说如果我们知道链表长度,直接遍历到第len-n节点,进行删除就行。而计算长度有需要遍历依次链表。能否只写一个循环?
+我们使用两个指针slow,fast,让fast先走n步,然后同步向前,当fast走到末尾时,slow也就走到了len-n位置
+
+```C++
+ListNode *removeNthFromEnd(ListNode *head, int n) {
+  ListNode *fast = head, *slow = head;
+  while (n--) {
+    fast = fast->next;
+  }
+  // 此时删除的为头节点
+  if (fast == nullptr) {
+    return head->next;
+  }
+  // 定位到删除位置的前一个节点
+  while (fast->next != nullptr) {
+    slow = slow->next;
+    fast = fast->next;
+  }
+  slow->next = slow->next->next;
+  return head;
 }
 ```
