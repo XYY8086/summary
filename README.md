@@ -34,6 +34,7 @@
   - [21 搜索二维矩阵](#21-搜索二维矩阵)
   - [22 相交链表](#22-相交链表)
   - [23 反转链表](#23-反转链表)
+  - [24 回文链表](#24-回文链表)
 
 # leetcode100
 
@@ -789,5 +790,37 @@ ListNode *reverseList(ListNode *head) {
   head->next = nullptr;
 
   return reverse_head;
+}
+```
+
+## 24 [回文链表](https://leetcode.cn/problems/palindrome-linked-list/?envType=study-plan-v2&envId=top-100-liked)
+
+回文意思就是从前往后遍历结果和从后往前遍历的结果时一样的。我们首先想到的是遍历一遍链表,将值存放到数组中,因为数组可以随机访问，可以很容易判断正序和逆序是否是相同的。
+那么能否不使用额外的内存空间呢?
+我们可以反转链表的后半段,然后依次判断前后两个半段的值是否相同。其中我们需要解决如何找到开始反转的中间节点，这里可以使用快慢指针，快指针到尾部时，慢指针走到中间。
+
+![回文链表](./leetcode/img/回文链表.png)
+
+```C++
+bool isPalindrome(ListNode *head) {
+  if (head == nullptr) {
+    return false;
+  }
+  // 反转链表的后半部分,然后同前半部分进行值对比
+  ListNode *slow = head, *fast = head;
+  while (fast && fast->next) {
+    slow = slow->next;
+    fast = fast->next->next;
+  }
+  ListNode *reverse_node = reverseList(slow);
+  ListNode *normal_node = head;
+  while (reverse_node) {
+    if (reverse_node->val != normal_node->val) {
+      return false;
+    }
+    reverse_node = reverse_node->next;
+    normal_node = normal_node->next;
+  }
+  return true;
 }
 ```

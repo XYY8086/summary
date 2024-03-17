@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 template <typename T> void PrintSeries(const T &input, char sep = ',') {
   for (const auto &itr : input) {
@@ -36,3 +37,18 @@ struct ListNode {
   ListNode *next;
   ListNode(int x) : val(x), next(NULL) {}
 };
+
+ListNode* TransVectorToList(const std::vector<int>& input){
+  ListNode* head = nullptr, *p = nullptr;
+  for(int index = 0; index < input.size(); ++index){
+    if(index == 0){
+      head = new ListNode(input[index]);
+      p = head;
+      continue;
+    }
+
+    p->next = new ListNode(input[index]);
+    p = p->next;
+  }
+  return head;
+}
