@@ -38,6 +38,7 @@
   - [25 环形链表](#25-环形链表)
   - [26 环形链表的入口](#26-环形链表的入口)
   - [27 合并两个有序链表](#27-合并两个有序链表)
+  - [28 两数相加](#28-两数相加)
 
 # leetcode100
 
@@ -905,5 +906,37 @@ ListNode *mergeTwoLists(ListNode *list1, ListNode *list2) {
     list2->next = mergeTwoLists(list1, list2->next);
     return list2;
   }
+}
+```
+
+## 28 [两数相加](https://leetcode.cn/problems/add-two-numbers/description/?envType=study-plan-v2&envId=top-100-liked)
+
+![两个链表相加](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2021/01/02/addtwonumber1.jpg)
+
+实际上就是简单的模拟加法,从头到尾遍历两个链表即可。注意最后的res需要再判断一下
+```C++
+ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
+  ListNode *ptr1 = l1, *ptr2 = l2;
+
+  int res = 0;
+  std::shared_ptr<ListNode> head = std::make_shared<ListNode>();
+  ListNode *p = head.get();
+  while (ptr1 || ptr2) {
+    int sum = (ptr1 == nullptr ? 0 : ptr1->val) +
+              (ptr2 == nullptr ? 0 : ptr2->val) + res;
+    res = sum >= 10 ? 1 : 0;
+
+    p->next = new ListNode(sum % 10);
+    p = p->next;
+
+    ptr1 = ptr1 == nullptr ? nullptr : ptr1->next;
+    ptr2 = ptr2 == nullptr ? nullptr : ptr2->next;
+  }
+
+  if (res) {
+    p->next = new ListNode(res);
+  }
+
+  return head->next;
 }
 ```
