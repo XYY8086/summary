@@ -36,6 +36,7 @@
   - [23 反转链表](#23-反转链表)
   - [24 回文链表](#24-回文链表)
   - [25 环形链表](#25-环形链表)
+  - [26 环形链表的入口](#26-环形链表的入口)
 
 # leetcode100
 
@@ -844,5 +845,39 @@ bool hasCycle(ListNode *head) {
     fast = fast->next->next;
   }
   return true;
+}
+```
+
+## 26 [环形链表的入口](https://leetcode.cn/problems/linked-list-cycle-ii/description/?envType=study-plan-v2&envId=top-100-liked)
+
+关键在于找到相遇点后如何判断环的入口在哪里? 
+
+![环的入口](./leetcode/img/环形链表的入口.png)
+
+```C++
+ListNode *detectCycle(ListNode *head) {
+  if (head == nullptr || head->next == nullptr) {
+    return nullptr;
+  }
+  // 需要注意初始化是是让fast=head->next 还是fast=head; 这对于是否在找到相遇点后是否让slow=slow->next(前者需要,后者不需要)
+  // 这里实际上是怎么定义长度,第一次赋值算不算1步。不算的话 fast=head，能满足从head到入口需要走a步,fast=2*slow
+  // 若在这种情况下fast=head-next,实际上fast=2*slow+1,算出来slow需要走a+1，而head到入口的步数是固定的a步,所以此时slow需要先走一步在进入同步移动
+  ListNode *slow = head, *fast = head->next;
+
+  while (slow != fast) {
+    if (fast == nullptr || fast->next == nullptr) {
+      return nullptr;
+    }
+    slow = slow->next;
+    fast = fast->next->next;
+  }
+  ListNode *length_helper = head;
+  slow = slow->next;
+  while (length_helper != slow) {
+    length_helper = length_helper->next;
+    slow = slow->next;
+  }
+
+  return slow;
 }
 ```
