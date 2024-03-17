@@ -32,6 +32,7 @@
   - [19 螺旋矩阵](#19-螺旋矩阵)
   - [20 旋转图像](#20-旋转图像)
   - [21 搜索二维矩阵](#21-搜索二维矩阵)
+  - [22 相交链表](#22-相交链表)
 
 # leetcode100
 
@@ -730,3 +731,17 @@ void rotate(std::vector<std::vector<int>> &matrix) {
 每列的元素从上到下升序排列。
 
 矩阵的行列是由排序特征的,可以从右上角开始遍历,当前元素小于target时,向下移动,反之向左移动。
+
+## 22 [相交链表](https://leetcode.cn/problems/intersection-of-two-linked-lists/description/?envType=study-plan-v2&envId=top-100-liked)
+
+![相交链表示意图](./leetcode/img/相交链表.png)
+
+```C++
+    if(!headA || !headB){return nullptr;}
+    ListNode* ptr1 = headA, *ptr2 = headB;
+    while(ptr1 != ptr2){
+        ptr1 = ptr1 == nullptr ? headB : ptr1->next;
+        ptr2 = ptr2 == nullptr ? headA : ptr2->next;
+    }
+    return ptr1;
+```

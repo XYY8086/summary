@@ -21,3 +21,9 @@ template <typename T> void PrintPairs(const T &input, char sep = ',') {
   }
   std::cout << std::endl;
 }
+
+struct ListNode {
+  int val;
+  ListNode *next;
+  ListNode(int x) : val(x), next(NULL) {}
+};
