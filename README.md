@@ -35,6 +35,7 @@
   - [22 相交链表](#22-相交链表)
   - [23 反转链表](#23-反转链表)
   - [24 回文链表](#24-回文链表)
+  - [25 环形链表](#25-环形链表)
 
 # leetcode100
 
@@ -820,6 +821,27 @@ bool isPalindrome(ListNode *head) {
     }
     reverse_node = reverse_node->next;
     normal_node = normal_node->next;
+  }
+  return true;
+}
+```
+
+## 25 [环形链表](https://leetcode.cn/problems/linked-list-cycle/submissions/513133687/?envType=study-plan-v2&envId=top-100-liked)
+
+如果存在环,则在环内的快慢指针一定会相遇.
+```C++
+bool hasCycle(ListNode *head) {
+  if (head == nullptr || head->next == nullptr) {
+    return false;
+  }
+  ListNode *slow = head, *fast = head->next;
+
+  while (slow != fast) {
+    if (fast == nullptr || fast->next == nullptr) {
+      return false;
+    }
+    slow = slow->next;
+    fast = fast->next->next;
   }
   return true;
 }
