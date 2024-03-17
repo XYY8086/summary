@@ -37,6 +37,7 @@
   - [24 回文链表](#24-回文链表)
   - [25 环形链表](#25-环形链表)
   - [26 环形链表的入口](#26-环形链表的入口)
+  - [27 合并两个有序链表](#27-合并两个有序链表)
 
 # leetcode100
 
@@ -879,5 +880,30 @@ ListNode *detectCycle(ListNode *head) {
   }
 
   return slow;
+}
+```
+
+## 27 [合并两个有序链表](https://leetcode.cn/problems/merge-two-sorted-lists/description/?envType=study-plan-v2&envId=top-100-liked)
+
+常规方法,分别比较两个链表节点的val,p总是指向较小的那个节点。
+
+也可以使用递归
+```C++
+ListNode *mergeTwoLists(ListNode *list1, ListNode *list2) {
+  if (list1 == nullptr) {
+    return list2;
+  }
+  if (list2 == nullptr) {
+    return list1;
+  }
+
+  if (list1->val < list2->val) {
+    // list1对应的值较小 继续向后递归
+    list1->next = mergeTwoLists(list1->next, list2);
+    return list1;
+  } else {
+    list2->next = mergeTwoLists(list1, list2->next);
+    return list2;
+  }
 }
 ```
