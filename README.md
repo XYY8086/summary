@@ -33,6 +33,7 @@
   - [20 旋转图像](#20-旋转图像)
   - [21 搜索二维矩阵](#21-搜索二维矩阵)
   - [22 相交链表](#22-相交链表)
+  - [23 反转链表](#23-反转链表)
 
 # leetcode100
 
@@ -737,11 +738,56 @@ void rotate(std::vector<std::vector<int>> &matrix) {
 ![相交链表示意图](./leetcode/img/相交链表.png)
 
 ```C++
-    if(!headA || !headB){return nullptr;}
-    ListNode* ptr1 = headA, *ptr2 = headB;
-    while(ptr1 != ptr2){
-        ptr1 = ptr1 == nullptr ? headB : ptr1->next;
-        ptr2 = ptr2 == nullptr ? headA : ptr2->next;
-    }
-    return ptr1;
+if(!headA || !headB){return nullptr;}
+ListNode* ptr1 = headA, *ptr2 = headB;
+while(ptr1 != ptr2){
+    ptr1 = ptr1 == nullptr ? headB : ptr1->next;
+    ptr2 = ptr2 == nullptr ? headA : ptr2->next;
+}
+return ptr1;
+```
+
+## 23 [反转链表](https://leetcode.cn/problems/reverse-linked-list/description/?envType=study-plan-v2&envId=top-100-liked)
+
+![反转链表](https://assets.leetcode.com/uploads/2021/02/19/rev1ex1.jpg)
+
+![反转链表](./leetcode/img/反转链表.png)
+
+从前往后,每次修改一个指针的指向
+```C++
+ListNode *reverseList(ListNode *head) {
+  if (!head || !head->next) {
+    return head;
+  }
+  ListNode *pre = nullptr;
+  ListNode *current = head;
+  while (current) {
+    auto *next = current->next;
+    // 反转 pre -> current 到 current -> pre,
+    // 因为后面要移动current,所以需要临时保存current->next
+    current->next = pre;
+    pre = current;
+    current = next;
+  }
+  return pre;
+}
+```
+
+也可以通过递归,从后往前
+```C++
+ListNode *reverseList(ListNode *head) {
+  if (!head || !head->next) {
+    return head;
+  }
+  // head之后的节点已经反转完毕  head -> tmp <- x1，
+  // tmp实际上一直是反转链表的头节点
+  auto *reverse_head = reverseList(head->next);
+  // head->next
+  // 为已经反转的链表尾节点,将其指向head，也就是完成包括head在内的反转
+  head->next->next = head;
+  // 置空，避免出现环。这一步比较容易遗忘
+  head->next = nullptr;
+
+  return reverse_head;
+}
 ```

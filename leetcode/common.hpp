@@ -22,6 +22,15 @@ template <typename T> void PrintPairs(const T &input, char sep = ',') {
   std::cout << std::endl;
 }
 
+template <typename T> void PrintLinkList(const T *input, char sep = ',') {
+  const T *head = input;
+  while (head) {
+    std::cout << head->val << sep;
+    head = head->next;
+  }
+  std::cout << std::endl;
+}
+
 struct ListNode {
   int val;
   ListNode *next;
