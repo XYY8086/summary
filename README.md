@@ -46,6 +46,8 @@
   - [33 排序链表](#33-排序链表)
   - [34 合并k个有序链表](#34-合并k个有序链表)
   - [35 LRU缓存](#35-lru缓存)
+  - [36 二叉树的中序遍历](#36-二叉树的中序遍历)
+  - [37 二叉树的最大深度](#37-二叉树的最大深度)
 
 # leetcode100
 
@@ -1273,4 +1275,72 @@ private:
   std::shared_ptr<Node> tail_ = std::make_shared<Node>();
   std::unordered_map<int, std::shared_ptr<Node>> kv_;
 };
+```
+
+## 36 [二叉树的中序遍历](https://leetcode.cn/problems/binary-tree-inorder-traversal/description/?envType=study-plan-v2&envId=top-100-liked)
+
+```C++
+std::vector<int> inorderTraversal(TreeNode *root) {
+  if (!root) {
+    return {};
+  }
+  std::vector<int> ret;
+  std::stack<TreeNode *> q;
+
+  TreeNode *current = root;
+  while (current || !q.empty()) {
+    if (current) {
+      q.push(current);
+      // 当前节点不为空,持续返回该节点的左子树
+      current = current->left;
+    } else {
+      // 当前节点空,开始访问栈顶元素
+      auto *visited_node = q.top();
+      q.pop();
+      ret.push_back(visited_node->val);
+      // 开始访问右子树
+      current = visited_node->right;
+    }
+  }
+  return ret;
+}
+```
+
+## 37 [二叉树的最大深度](https://leetcode.cn/problems/maximum-depth-of-binary-tree/description/?envType=study-plan-v2&envId=top-100-liked)
+
+1. 递归做法,当前节点的最大深度=左右子树中较大的深度+1
+```C++
+int maxDepth(TreeNode *root) {
+  if (root == nullptr) {
+    return 0;
+  }
+  return std::max(maxDepth(root->left), maxDepth(root->right)) + 1;
+}
+```
+2. 迭代做法,层序遍历
+```C++
+int maxDepth(TreeNode *root) {
+  if (root == nullptr) {
+    return 0;
+  }
+  std::deque<TreeNode *> q;
+  q.push_back(root);
+
+  int ret = 0;
+  while (!q.empty()) {
+    int len = q.size(); // 当前层的节点数
+    for (int i = 0; i < len; ++i) {
+      auto *node = q.front();
+      if (node->left) {
+        q.push_back(node->left);
+      }
+      if (node->right) {
+        q.push_back(node->right);
+      }
+      q.pop_front();
+    }
+    ++ret;
+  }
+  return ret;
+}
 ```
