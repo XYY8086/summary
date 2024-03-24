@@ -56,6 +56,7 @@
   - [43 验证二叉搜索树](#43-验证二叉搜索树)
     - [前序遍历](#前序遍历)
     - [递归](#递归)
+  - [44 二叉搜索树中第k小的元素](#44-二叉搜索树中第k小的元素)
 
 # leetcode100
 
@@ -1539,5 +1540,29 @@ bool isValidBST(TreeNode *root) {
   // 正确的思路是验证一个节点是否true,判断当前节点的值是否在理想区间内
   return isValidBST(root, std::numeric_limits<int64_t>::min(),
                     std::numeric_limits<int64_t>::max());
+}
+```
+
+## 44 [二叉搜索树中第k小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-bst/description/?envType=study-plan-v2&envId=top-100-liked)
+
+由于bst的前序遍历是递增的,所有前序遍历到的第k个节点即时最终的结果。
+```C++
+int kthSmallest(TreeNode *root, int k) {
+  std::stack<TreeNode *> q;
+  TreeNode *current = root;
+  while (!q.empty() || root != nullptr) {
+    if (current) {
+      q.push(current);
+      current = current->left;
+    } else {
+      auto *node = q.top();
+      q.pop();
+      if (--k == 0) {
+        return node->val;
+      }
+      current = current->right;
+    }
+  }
+  return -1;
 }
 ```
