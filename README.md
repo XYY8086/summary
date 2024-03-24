@@ -49,6 +49,7 @@
   - [36 二叉树的中序遍历](#36-二叉树的中序遍历)
   - [37 二叉树的最大深度](#37-二叉树的最大深度)
   - [38 翻转二叉树](#38-翻转二叉树)
+  - [39 对称二叉树](#39-对称二叉树)
 
 # leetcode100
 
@@ -1388,3 +1389,30 @@ TreeNode *invertTree(TreeNode *root) {
   return root;
 }
 ```
+
+## 39 [对称二叉树](https://leetcode.cn/problems/symmetric-tree/description/?envType=study-plan-v2&envId=top-100-liked)
+
+![对称二叉树](https://pic.leetcode.cn/1698026966-JDYPDU-image.png)
+
+关键是搞清楚,如何判断两个节点是否处于对称状态:
+- 两个A B节点的值相等
+- (A->left, B->right) (A->right, B->left) 这两对节点同样满足对称
+
+可以从描述来看,递归可以很好的解决这个问题
+```C++
+bool isSymmetric(TreeNode *root) { return isSymmetric(root, root); }
+
+bool isSymmetric(TreeNode *left, TreeNode *right) {
+  if (!left && right || (left && !right)) {
+    return false;
+  }
+  if (!left && !right) {
+    return true;
+  }
+  return (left->val == right->val) && isSymmetric(left->right, right->left) &&
+         isSymmetric(left->left, right->right);
+}
+```
+
+另外,也可以通过层序遍历判断。每次从deque中弹出两个元素A,B,比较这两个值是否相等，入队列的时候,成对如队列(A->left, B->right) (A->right, B->left)
+对于root节点则再开始的时候入两次队列。
