@@ -44,6 +44,7 @@
   - [31 K个一组反转链表](#31-k个一组反转链表)
   - [32 随机链表的复制](#32-随机链表的复制)
   - [33 排序链表](#33-排序链表)
+  - [34 合并k个有序链表](#34-合并k个有序链表)
 
 # leetcode100
 
@@ -1149,5 +1150,25 @@ ListNode *sortList2(ListNode *head) {
     ret = __->next;
   }
   return ret;
+}
+```
+
+## 34 [合并k个有序链表](https://leetcode.cn/problems/merge-k-sorted-lists/description/?envType=study-plan-v2&envId=top-100-liked)
+
+在合并两个有序链表的基础上,我们可以通过k-1次合并,完成任务。但是更高效的做法是两两合并,log(2, K)次完成任务。
+```C++
+ListNode* mergeKLists(std::vector<ListNode*>& lists) {
+    if (lists.empty()){return nullptr;}
+    int len = lists.size();
+    for (int step =1; step < len; step *=2) {
+        for (int index = 0; index < lists.size(); index += 2 * step) {
+            // 参与合并的两个节点之间距离为step
+            lists[index] =
+                mergeTowLists(lists[index], index + step >= lists.size()
+                                                ? nullptr
+                                                : lists[index + step]);
+        }
+    }
+    return lists[0];
 }
 ```
