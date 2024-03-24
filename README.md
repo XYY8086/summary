@@ -43,6 +43,7 @@
   - [30 两两交换链表节点](#30-两两交换链表节点)
   - [31 K个一组反转链表](#31-k个一组反转链表)
   - [32 随机链表的复制](#32-随机链表的复制)
+  - [33 排序链表](#33-排序链表)
 
 # leetcode100
 
@@ -1090,6 +1091,63 @@ Node *copyRandomList(Node *head) {
     p = next;
   }
 
+  return ret;
+}
+```
+
+## 33 [排序链表](https://leetcode.cn/problems/sort-list/?envType=study-plan-v2&envId=top-100-liked)
+![排序链表](https://assets.leetcode.com/uploads/2020/09/14/sort_list_2.jpg)
+
+链表的排序难点在于不像数组一样可以随机访问任意元素，节点的交换也相对复杂。推荐是使用归并排序,先将小段的链表变得有序，然后分别合并有序的部分。
+
+```C++
+ListNode *sortList2(ListNode *head) {
+  if (head == nullptr || head->next == nullptr) {
+    return head;
+  }
+  ListNode *p = head;
+  int len = GetLength(head);
+  ListNode *ret = head; // ret 存储每次排序结束的头节点位置
+  // index 表示当前参与排序的两个链表的长度
+  for (int index = 1; index < len; index = 2 * index) {
+    p = ret;
+    ListNode *list1 = p, *list2 = nullptr;
+    std::shared_ptr<ListNode> __ = std::make_shared<ListNode>(0);
+    // connect 用于连接本次排序后的链表
+    ListNode *connect = __.get();
+    while (p) {
+      // list1 list2 分别是两段链表的头节点
+      list1 = p;
+      // 寻找 list2
+      for (int i = 1; i < index && p->next; ++i) {
+        p = p->next;
+      }
+      list2 = p->next;
+      // 将list1 截断成独立链表，便于合并
+      p->next = nullptr;
+      // 寻找final
+      p = list2;
+      for (int i = 1; i < index && p && p->next; ++i) {
+        p = p->next;
+      }
+      auto *final = p ? p->next : nullptr;
+      // 将list2 截断成独立链表
+      if (p != nullptr) {
+        p->next = nullptr;
+      }
+      // 对两段有序部分进行合并
+      auto sorted_list = mergeList2(list1, list2);
+      // 将本次排序的子链表连接起来
+      connect->next = sorted_list;
+      // 找到有序链表的尾节点,用于下一次连接两个有序的部分
+      while (connect->next) {
+        connect = connect->next;
+      }
+      // p指针移动到下一个待排序的位置
+      p = final;
+    }
+    ret = __->next;
+  }
   return ret;
 }
 ```
