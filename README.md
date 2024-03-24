@@ -42,6 +42,7 @@
   - [29 删除链表中倒数第n个节点](#29-删除链表中倒数第n个节点)
   - [30 两两交换链表节点](#30-两两交换链表节点)
   - [31 K个一组反转链表](#31-k个一组反转链表)
+  - [32 随机链表的复制](#32-随机链表的复制)
 
 # leetcode100
 
@@ -1043,6 +1044,52 @@ ListNode *reverseKGroup(ListNode *head, int k) {
     }
     p = p->next;
   }
+  return ret;
+}
+```
+
+## 32 [随机链表的复制](https://leetcode.cn/problems/copy-list-with-random-pointer/description/?envType=study-plan-v2&envId=top-100-liked)
+
+![随机链表](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2020/01/09/e1.png)
+
+这个题目不太顺的一点是如何处理随机指针,从前往后遍历的时候,random指针指向的内容可能还没有被创建,如果没有被创建那么我们创建它,
+后续它可能作为next指针的指向，所以我们还要将其保存起来并能够在根据原链表节点对应到该节点，自然而然我们想到使用map, key是原链表节点地址,val是新链表对应地址。
+第一次遍历的时候填充map,第二次遍历的时候根据map信息连接random指针。
+
+如果不使用map，如何表达新旧节点之间的关系，或者说如何根据旧节点定位到新节点呢?
+我们可以借助链表前后关系的表示能力，将新的节点插入到原节点后面，这样random节点的对照关系就明确了。
+![复杂链表复制](./leetcode/img/复杂链表的复制.png)
+
+```C++
+Node *copyRandomList(Node *head) {
+  // 1. copy一份链表连接在原链表的后面
+  Node *p = head;
+  while (p) {
+    auto *next = p->next;
+    p->next = new Node(p->val);
+    p->next->next = next;
+    p = next;
+  }
+  // 2. 连接random指针
+  p = head;
+  while (p) {
+    auto *cur = p->next;
+    cur->random = p->random == nullptr ? nullptr : p->random->next;
+    p = cur->next;
+  }
+
+  // 3. 断开连接
+  Node *ret = head->next;
+  p = head;
+  while (p) {
+    auto* next = p->next->next;
+    auto *new_node = p->next;
+    p->next = new_node->next;
+    new_node->next = new_node->next == nullptr ? nullptr : new_node->next->next;
+
+    p = next;
+  }
+
   return ret;
 }
 ```
