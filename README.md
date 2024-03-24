@@ -51,6 +51,8 @@
   - [38 翻转二叉树](#38-翻转二叉树)
   - [39 对称二叉树](#39-对称二叉树)
   - [40 二叉树的直径](#40-二叉树的直径)
+  - [41 二叉树的层序遍历](#41-二叉树的层序遍历)
+  - [42 有序数组转化成平衡二叉搜索树](#42-有序数组转化成平衡二叉搜索树)
 
 # leetcode100
 
@@ -1446,5 +1448,32 @@ int dfs(TreeNode *root) {
 int diameterOfBinaryTree(TreeNode *root) {
   dfs(root);
   return result;
+}
+```
+
+## 41 [二叉树的层序遍历](https://leetcode.cn/problems/binary-tree-level-order-traversal/?envType=study-plan-v2&envId=top-100-liked)
+
+使用队列,将当前节点的左右节点放到队列尾部,依次访问队列头部。
+
+## 42 [有序数组转化成平衡二叉搜索树](https://leetcode.cn/problems/convert-sorted-array-to-binary-search-tree/description/?envType=study-plan-v2&envId=top-100-liked)
+
+有序数组`-10,-3,0,5,9`,转化成平衡bst,我们知道0元素肯定是根节点, `-10 -3` 为根节点的左子树, `5, 9`为根节点的右子树，而对于每个子树的构建同样满足这个规律。
+```C++
+// 将排序数组转换成平衡搜索二叉树
+TreeNode *sortedArrayToBST(std::vector<int> &nums) {
+  return sortedArrayToBST(nums, 0, nums.size() - 1);
+}
+
+TreeNode *sortedArrayToBST(std::vector<int> &nums, int left, int right) {
+  if (left > right) {
+    return nullptr;
+  }
+  int mid = (left + right) / 2;
+  TreeNode *current = new TreeNode(nums[mid]);
+  // 构建左子树
+  current->left = sortedArrayToBST(nums, left, mid - 1);
+  // 构建右子树
+  current->right = sortedArrayToBST(nums, mid + 1, right);
+  return current;
 }
 ```
