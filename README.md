@@ -53,6 +53,9 @@
   - [40 二叉树的直径](#40-二叉树的直径)
   - [41 二叉树的层序遍历](#41-二叉树的层序遍历)
   - [42 有序数组转化成平衡二叉搜索树](#42-有序数组转化成平衡二叉搜索树)
+  - [43 验证二叉搜索树](#43-验证二叉搜索树)
+    - [前序遍历](#前序遍历)
+    - [递归](#递归)
 
 # leetcode100
 
@@ -1475,5 +1478,66 @@ TreeNode *sortedArrayToBST(std::vector<int> &nums, int left, int right) {
   // 构建右子树
   current->right = sortedArrayToBST(nums, mid + 1, right);
   return current;
+}
+```
+
+## 43 [验证二叉搜索树](https://leetcode.cn/problems/validate-binary-search-tree/description/?envType=study-plan-v2&envId=top-100-liked)
+二叉搜索树的条件:
+- 当前节点的左子树的值小于当前节点的值
+- 当前节点的右子树的值大于当前节点的值
+- 当前节点的左右子树同样也满足上述条件
+
+### 前序遍历
+根据bst的定义，前序遍历的结果是一个递增的序列
+```C++
+bool isValidBST(TreeNode *root){
+    if(root == nullptr){return true;}
+
+    std::stack<TreeNode*> q;
+    TreeNode* current = root;
+    // 保存上一个节点的值
+    int64_t last_num = std::numeric_limits<int64_t>::min();
+    while(!q.empty() || current){
+        if(current){
+            q.push(current);
+            current = current->left;
+        }else{
+            auto* node = q.top();
+            q.pop();
+            // 比较当前节点的值是否大于上一个节点的值
+            if(node->val <= last_num){
+                return false;
+            }
+            last_num = node->val;
+            current = node->right;
+        }
+    }
+    return true;
+}
+```
+
+### 递归
+最开始的想法是直接判断当前节点为根节点组成的3节点小树是否满足要求,然后依次判断左右子树，但是没有处理好左右子树的比较值的上下界。
+官方给出的做法是每次递归，只验证当前节点是否处在一个bst中,值是否再约束的上下界内，而对左右子树的上下界实际上是不同的。例如当前
+节点的上下界为 [left, right], 当前节点的值为val,那么要求左子树小于该节点的值,则左子树上下界为[left, value]
+```C++
+bool isValidBST(TreeNode *root, int64_t left, int64_t right) {
+  if (root == nullptr) {
+    return true;
+  }
+  // 1. 当前节点满足  left < val < right
+  // 2. 后续左子树满足 val -> [left, current->val]
+  // 3. 后续右子树满足 val -> [current->val, right]
+  return root->val < right && root->val > left &&
+         isValidBST(root->left, left, root->val) &&
+         isValidBST(root->right, root->val, right);
+}
+
+bool isValidBST(TreeNode *root) {
+  // 最初的想法是先验证一个小树 A B C 是否满足 B < A < C，
+  // 然后依次递归，但是这种情况无法满足整棵树的大小关系
+  // 正确的思路是验证一个节点是否true,判断当前节点的值是否在理想区间内
+  return isValidBST(root, std::numeric_limits<int64_t>::min(),
+                    std::numeric_limits<int64_t>::max());
 }
 ```
