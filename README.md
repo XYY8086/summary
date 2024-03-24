@@ -48,6 +48,7 @@
   - [35 LRU缓存](#35-lru缓存)
   - [36 二叉树的中序遍历](#36-二叉树的中序遍历)
   - [37 二叉树的最大深度](#37-二叉树的最大深度)
+  - [38 翻转二叉树](#38-翻转二叉树)
 
 # leetcode100
 
@@ -1342,5 +1343,48 @@ int maxDepth(TreeNode *root) {
     ++ret;
   }
   return ret;
+}
+```
+
+## 38 [翻转二叉树](https://leetcode.cn/problems/invert-binary-tree/description/?envType=study-plan-v2&envId=top-100-liked)
+
+![翻转二叉树](https://assets.leetcode.com/uploads/2021/03/14/invert1-tree.jpg)
+
+1. 层序遍历,每次访问到一个节点时,就交换其左右节点
+```C++
+TreeNode *invertTree(TreeNode *root) {
+  if (root == nullptr) {
+    return root;
+  }
+  std::deque<TreeNode *> q;
+  q.push_back(root);
+  while (!q.empty()) {
+    auto *current = q.front();
+    auto *left = current->left;
+    current->left = current->right;
+    current->right = left;
+    if (current->left) {
+      q.push_back(current->left);
+    }
+    if (current->right) {
+      q.push_back(current->right);
+    }
+    q.pop_front();
+  }
+  return root;
+}
+```
+2. 递归
+```C++
+TreeNode *invertTree(TreeNode *root) {
+  if (root == nullptr) {
+    return root;
+  }
+  // 这里也可以写成尾递归,先交换当前节点的左右子树,再往下递归
+  auto *left_ret = invertTree(root->left);
+  auto *right_ret = invertTree(root->right);
+  root->left = right_ret;
+  root->right = left_ret;
+  return root;
 }
 ```
