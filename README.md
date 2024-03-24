@@ -57,6 +57,7 @@
     - [前序遍历](#前序遍历)
     - [递归](#递归)
   - [44 二叉搜索树中第k小的元素](#44-二叉搜索树中第k小的元素)
+  - [45 二叉树的右视图](#45-二叉树的右视图)
 
 # leetcode100
 
@@ -1566,3 +1567,7 @@ int kthSmallest(TreeNode *root, int k) {
   return -1;
 }
 ```
+
+## 45 [二叉树的右视图](https://leetcode.cn/problems/binary-tree-right-side-view/description/?envType=study-plan-v2&envId=top-100-liked)
+
+在层序遍历的时候,取这一层的最后一个元素，组成的极为右视图。
