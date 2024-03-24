@@ -45,6 +45,7 @@
   - [32 随机链表的复制](#32-随机链表的复制)
   - [33 排序链表](#33-排序链表)
   - [34 合并k个有序链表](#34-合并k个有序链表)
+  - [35 LRU缓存](#35-lru缓存)
 
 # leetcode100
 
@@ -1171,4 +1172,105 @@ ListNode* mergeKLists(std::vector<ListNode*>& lists) {
     }
     return lists[0];
 }
+```
+
+## 35 [LRU缓存](https://leetcode.cn/problems/lru-cache/description/?envType=study-plan-v2&envId=top-100-liked)
+
+LRU缓存,最近最少被访问,get put时将元素放到链表头部,熔炼不足时从尾部进行删除。可以使用链表,同时为了能够快速查找某个值是否存在,可以使用map保存值到链表节点的映射。
+需要注意: 
+1. 为了比较轻松的在头部和尾部进行插入和删除,可以i使用额外的头尾节点
+2. 删除操作之前需要保存节点,例如当容量不足删除头部节点时,head->next为删除的目标,首先移除该节点后head->next已经发生变化,再从map中删除节点时不能再使用head->next了,而是需要保存一个临时值。
+```C++
+struct Node {
+  int key;
+  int val;
+  std::shared_ptr<Node> pre = nullptr;
+  std::shared_ptr<Node> next = nullptr;
+};
+
+class LRUCache {
+public:
+  LRUCache(int capacity) {
+    capacity_ = capacity;
+    used_ = 0;
+    head_->next = tail_;
+    tail_->pre = head_;
+  }
+
+  int get(int key) {
+    auto itr = kv_.find(key);
+    if (itr == kv_.end()) {
+      return -1;
+    }
+    auto current = itr->second;
+    // 将当前节点从链表中删除
+    remove_node(current);
+    // 将当前节点插入到链表尾部
+    insert_to_tail(current);
+    return current->val;
+  }
+
+  void put(int key, int value) {
+    auto itr = kv_.find(key);
+    // 当前节点不存在,需要插入
+    if (itr == kv_.end()) {
+      if (used_ >= capacity_) {
+        // 删除头节点
+        std::cout << "remove node,key=" << head_->next->key << ",val=" << head_->next->val << std::endl;
+        // remove之后 head->next 发生改变,所以这里存一个节点,为了能够删除map
+        auto del_node = head_->next;
+        remove_node(del_node);
+        kv_.erase(del_node->key);
+        --used_;
+      }
+      std::shared_ptr<Node> node = std::make_shared<Node>();
+      node->key = key;
+      node->val = value;
+      // 新节点添加到尾部
+      insert_to_tail(node);
+      kv_[key] = node;
+      ++used_;
+      return;
+    }
+    // 当前节点已经存在,更新值
+    auto current = itr->second;
+    current->val = value;
+    // 将当前节点从链表中删除
+    remove_node(current);
+    // 将当前节点插入到链表尾部
+    insert_to_tail(current);
+  }
+
+  // 将node节点插入到tail_节点之前
+  void insert_to_tail(std::shared_ptr<Node> node) {
+    node->pre = tail_->pre;
+    node->next = tail_;
+    tail_->pre->next = node;
+    tail_->pre = node;
+  }
+
+  // 删除current节点
+  void remove_node(std::shared_ptr<Node> current) {
+    current->pre->next = current->next;
+    current->next->pre = current->pre;
+    current->pre = nullptr;
+    current->next = nullptr;
+  }
+
+  void Debug() {
+    auto p = head_->next;
+    while (p != tail_) {
+      std::cout <<"(" << p->key << "," <<p->val << "),";
+      p = p->next;
+    }
+    std::cout << std::endl;
+  }
+
+private:
+  int capacity_ = 0;  // 最大容量
+  int used_ = 0;      // 当前已使用容量
+  std::shared_ptr<Node> head_ = std::make_shared<Node>();
+  std::shared_ptr<Node> tail_ = std::make_shared<Node>();
+  std::unordered_map<int, std::shared_ptr<Node>> kv_;
+};
 ```
