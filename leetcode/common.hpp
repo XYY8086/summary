@@ -38,10 +38,10 @@ struct ListNode {
   ListNode(int x) : val(x), next(NULL) {}
 };
 
-ListNode* TransVectorToList(const std::vector<int>& input){
-  ListNode* head = nullptr, *p = nullptr;
-  for(int index = 0; index < input.size(); ++index){
-    if(index == 0){
+ListNode *TransVectorToList(const std::vector<int> &input) {
+  ListNode *head = nullptr, *p = nullptr;
+  for (int index = 0; index < input.size(); ++index) {
+    if (index == 0) {
       head = new ListNode(input[index]);
       p = head;
       continue;
@@ -52,3 +52,13 @@ ListNode* TransVectorToList(const std::vector<int>& input){
   }
   return head;
 }
+
+struct TreeNode {
+  int val;
+  TreeNode *left;
+  TreeNode *right;
+  TreeNode() : val(0), left(nullptr), right(nullptr) {}
+  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+  TreeNode(int x, TreeNode *left, TreeNode *right)
+      : val(x), left(left), right(right) {}
+};

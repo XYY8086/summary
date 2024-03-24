@@ -40,6 +40,7 @@
   - [27 合并两个有序链表](#27-合并两个有序链表)
   - [28 两数相加](#28-两数相加)
   - [29 删除链表中倒数第n个节点](#29-删除链表中倒数第n个节点)
+  - [30 两两交换链表节点](#30-两两交换链表节点)
 
 # leetcode100
 
@@ -965,5 +966,40 @@ ListNode *removeNthFromEnd(ListNode *head, int n) {
   }
   slow->next = slow->next->next;
   return head;
+}
+```
+
+## 30 [两两交换链表节点](https://leetcode.cn/problems/swap-nodes-in-pairs/description/?envType=study-plan-v2&envId=top-100-liked)
+
+![两两交换链表节点](https://assets.leetcode.com/uploads/2020/10/03/swap_ex1.jpg)
+
+![交换思路](./leetcode/img/两两交换链表节点.png)
+```C++
+ListNode *swapPairs1(ListNode *head) {
+  if (head == nullptr || head->next == nullptr) {
+    return head;
+  }
+
+  ListNode *pre = head, *current = head->next, *last_node = nullptr,
+           *ret = head->next;
+
+  while (pre && pre->next) {
+    // 确定pre current节点
+    current = pre->next;
+    // 保存next节点,便于继续向下迭代
+    auto *next = current->next;
+    // 反转指针
+    current->next = pre;
+    pre->next = next;
+    if (last_node) {
+      last_node->next = current;
+    }
+
+    last_node = pre;
+
+    // pre指针继续移动
+    pre = next;
+  }
+  return ret;
 }
 ```
