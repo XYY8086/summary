@@ -50,6 +50,7 @@
   - [37 二叉树的最大深度](#37-二叉树的最大深度)
   - [38 翻转二叉树](#38-翻转二叉树)
   - [39 对称二叉树](#39-对称二叉树)
+  - [40 二叉树的直径](#40-二叉树的直径)
 
 # leetcode100
 
@@ -1416,3 +1417,34 @@ bool isSymmetric(TreeNode *left, TreeNode *right) {
 
 另外,也可以通过层序遍历判断。每次从deque中弹出两个元素A,B,比较这两个值是否相等，入队列的时候,成对如队列(A->left, B->right) (A->right, B->left)
 对于root节点则再开始的时候入两次队列。
+
+## 40 [二叉树的直径](https://leetcode.cn/problems/diameter-of-binary-tree/description/?envType=study-plan-v2&envId=top-100-liked)
+
+首先明确,题目对直径的描述: `二叉树的直径是指树中任意两个节点之间最长路径的长度。这条路径可能经过也可能不经过根节点root.两节点之间路径的长度由它们之间边数表示.`
+
+接这个题目需要知道的有:
+- 遍历所有节点,求每个节点所在树的最大直径，然后取最大值
+- current节点的最大直径=current->left的深度+current->right的深度
+- 计算某个节点node的深度d=std::max(left, right) + 1
+
+通过前面求最大深度的题目，可以得到这个题目的递归解法
+```C++
+int result = 0;
+int dfs(TreeNode *root) {
+  if (root == nullptr) {
+    return 0;
+  }
+  int left = dfs(root->left);   // 左子树的深度
+  int right = dfs(root->right); // 右子树的深度
+                                // left + right 为当前root节点的直径
+  result = result > (left + right)
+               ? result
+               : (left + right); // 比较每个节点的直径,取最大值
+  return (left > right ? left : right) + 1; // 返回当前节点的最大深度
+}
+
+int diameterOfBinaryTree(TreeNode *root) {
+  dfs(root);
+  return result;
+}
+```
