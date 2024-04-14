@@ -67,6 +67,7 @@
     - [前缀和](#前缀和)
   - [49 二叉树的最近公共祖先](#49-二叉树的最近公共祖先)
   - [50 二叉树路径的最大和](#50-二叉树路径的最大和)
+  - [51 岛屿的数量](#51-岛屿的数量)
 
 # leetcode100
 
@@ -1824,5 +1825,47 @@ int max_path(TreeNode *root) {
 
   // 以当前节点为起点的路径，最大值要选择一个子树
   return root->val + std::max(left, right);
+}
+```
+
+## 51 [岛屿的数量](https://leetcode.cn/problems/number-of-islands/description/?envType=study-plan-v2&envId=top-100-liked)
+
+岛屿的含义是1组成的群的数量。
+```text
+grid = [
+  ["1","1","1","1","0"],
+  ["1","1","0","1","0"],
+  ["1","1","0","0","1"],
+  ["0","0","0","0","0"]
+]
+```
+
+如何数有多少个群: 遇到'1'的时候,将相邻的1都置0
+
+```C++
+void dfs(std::vector<std::vector<char>> &grid, int row, int col) {
+  if (row < 0 || col < 0 || row >= grid.size() || col >= grid[0].size()) {
+    return;
+  }
+  if (grid[row][col] != '1') {
+    return;
+  }
+  grid[row][col] = 0;
+  dfs(grid, row + 1, col);
+  dfs(grid, row - 1, col);
+  dfs(grid, row, col + 1);
+  dfs(grid, row, col - 1);
+}
+
+int numIslands(std::vector<std::vector<char>> &grid) {
+  int ret = 0;
+  for (int row = 0; row < grid.size(); ++row) {
+    for (int col = 0; col < grid[0].size(); ++col) {
+      if (grid[row][col] == '1') {
+        ++ret;
+        dfs(grid, row, col);
+      }
+    }
+  }
 }
 ```
