@@ -68,6 +68,7 @@
   - [49 二叉树的最近公共祖先](#49-二叉树的最近公共祖先)
   - [50 二叉树路径的最大和](#50-二叉树路径的最大和)
   - [51 岛屿的数量](#51-岛屿的数量)
+  - [52 腐烂的橘子](#52-腐烂的橘子)
 
 # leetcode100
 
@@ -1867,5 +1868,70 @@ int numIslands(std::vector<std::vector<char>> &grid) {
       }
     }
   }
+}
+```
+
+## 52 [腐烂的橘子](https://leetcode.cn/problems/rotting-oranges/?envType=study-plan-v2&envId=top-100-liked)
+
+计算传播的次数，我们将腐烂的橘子入队列,每次将这一批腐烂橘子传播,传播的次数为入队列次数-1.
+```C++
+bool change(std::vector<std::vector<int>> &grid, int row, int col) {
+  if (row < 0 || col < 0 || row >= grid.size() || col >= grid[0].size()) {
+    return false;
+  }
+  if (grid[row][col] != 1) {
+    return false;
+  }
+  grid[row][col] = 2;
+  return true;
+}
+
+int orangesRotting(std::vector<std::vector<int>> &grid) {
+  if (grid.empty()) {
+    return 0;
+  }
+  std::deque<std::pair<int, int>> q; // 存储腐烂橘子的位置
+  int fresh_num = 0;                 // 存储新鲜橘子的数量
+  for (int row = 0; row < grid.size(); ++row) {
+    for (int col = 0; col < grid[0].size(); ++col) {
+      if (grid[row][col] == 1) {
+        ++fresh_num;
+      } else if (grid[row][col] == 2) {
+        q.push_back({row, col});
+      }
+    }
+  }
+  // 当前已经没有新鲜的橘子，直接返回。(这一步容易遗漏)
+  if (fresh_num == 0) {
+    return 0;
+  }
+
+  int res = 0;
+  while (!q.empty()) {
+    int nums = q.size();
+    ++res;  // 预计传播了多少次，实际上就是批量入队列次数 - 1 (最后一批腐烂橘子，因为没有新鲜橘子了，所以不进行传播)
+    for (int i = 0; i < nums; ++i) {
+      auto locations = q.front();
+      q.pop_front();
+      // 对这个腐烂的位置进行传播
+      if (change(grid, locations.first + 1, locations.second)) {
+        --fresh_num;
+        q.push_back({locations.first + 1, locations.second});
+      }
+      if (change(grid, locations.first - 1, locations.second)) {
+        --fresh_num;
+        q.push_back({locations.first - 1, locations.second});
+      }
+      if (change(grid, locations.first, locations.second + 1)) {
+        --fresh_num;
+        q.push_back({locations.first, locations.second + 1});
+      }
+      if (change(grid, locations.first, locations.second - 1)) {
+        --fresh_num;
+        q.push_back({locations.first, locations.second - 1});
+      }
+    }
+  }
+  return fresh_num == 0 ? res - 1 : -1;
 }
 ```
