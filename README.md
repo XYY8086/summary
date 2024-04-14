@@ -62,6 +62,9 @@
     - [先前序遍历再连接右子树](#先前序遍历再连接右子树)
     - [遍历的同时修改节点](#遍历的同时修改节点)
   - [47 从前序和中序遍历重建二叉树](#47-从前序和中序遍历重建二叉树)
+  - [48 二叉树所有路径和](#48-二叉树所有路径和)
+    - [暴力求解](#暴力求解-1)
+    - [前缀和](#前缀和)
 
 # leetcode100
 
@@ -1644,7 +1647,7 @@ void flatten(TreeNode *root) {
 }
 ```
 
-## 47 从前序和中序遍历重建二叉树
+## 47 [从前序和中序遍历重建二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/description/?envType=study-plan-v2&envId=top-100-liked)
 
 ```C++
 TreeNode *buildTree(std::vector<int> &preorder, std::vector<int> &inorder) {
@@ -1668,4 +1671,89 @@ TreeNode *buildTree(std::vector<int> &preorder, std::vector<int> &inorder) {
   current->right = buildTree(preorder_right_vec, inorder_right_vec);
   return current;
 }
+```
+
+## 48 [二叉树所有路径和](https://leetcode.cn/problems/path-sum-iii/description/?envType=study-plan-v2&envId=top-100-liked)
+
+求和为指定值的所有路径个数。
+
+### 暴力求解
+求出二叉树中所有路径的和，这个任务可以拆解为求以node为起点的所有路径和，node为二叉树的所有节点。
+
+```C++
+// 以root为起点的所有路径和
+int rootSum(TreeNode *root, int64_t targetSum) {
+  if (root == nullptr) {
+    return 0;
+  }
+  int ret = 0;
+  if (targetSum == root->val) {
+    ret++;
+  }
+  // 当前节点+左子树组成的路径
+  ret += rootSum(root->left, targetSum - root->val);
+  // 当前节点+右子树组成的路径
+  ret += rootSum(root->right, targetSum - root->val);
+  return ret;
+}
+
+int pathSum(TreeNode *root, int targetSum) {
+  if (root == nullptr) {
+    return 0;
+  }
+  // 每个节点有两种选择,当前节点加入路径、不加入路径
+  // 1. 当前节点计入路径
+  int ret = rootSum(root, targetSum);
+  // 2. 当前节点不计入路径
+  ret += pathSum(root->left, targetSum);
+  ret += pathSum(root->right, targetSum);
+
+  return ret;
+}
+```
+
+### 前缀和
+在暴力求解中,我们从上往下计算,实际上在计算子树路径和时存在计算重复的问题。如果我们定义:
+{root, node1, ..., nodek} 这个路径的和为从根节点到nodek节点的路径和, 存储到map中，
+当前遍历到 current节点时, 从root出发的路径和为 current_sum,则current_sum - target存在map中,
+则说明存在一个路径{root, node1, ..., noden} = current_sum - target, 也就是说存在一个路径 {noden+1, ..., current} = target
+这时候就找到了一条目标路径。需要注意,空路径时一种特殊情况。
+
+```C++
+class Solution {
+public:
+  int pathSum(TreeNode *root, int targetSum) {
+    if (root == nullptr) {
+      return 0;
+    }
+
+    return dfs(root, 0, targetSum);
+  }
+
+  int dfs(TreeNode *root, int currentSum, int targetSum) {
+    if (root == nullptr) {
+      return 0;
+    }
+
+    //  如果存在前缀和为 currentSum - targetSum, 也就所有同样存在一个从 node(k)
+    //  -> current_node的路径和为 targetSum
+    currentSum += root->val;
+
+    int ret = 0;
+    if (prefix_.count(currentSum - targetSum)) {
+      ret = prefix_[currentSum - targetSum];
+    }
+    // 当前节点加入路径
+    ++prefix_[currentSum];
+    ret += dfs(root->left, currentSum, targetSum);
+    ret += dfs(root->right, currentSum, targetSum);
+    // 当前节点退出路径
+    --++prefix_[currentSum];
+    return ret;
+  }
+
+private:
+  // 保存从root->node(k) 的所有前缀和 key:前缀和 val:频次
+  std::unordered_map<int64_t, int> prefix_ = {{0, 1}};
+};
 ```
