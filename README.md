@@ -66,6 +66,7 @@
     - [暴力求解](#暴力求解-1)
     - [前缀和](#前缀和)
   - [49 二叉树的最近公共祖先](#49-二叉树的最近公共祖先)
+  - [50 二叉树路径的最大和](#50-二叉树路径的最大和)
 
 # leetcode100
 
@@ -1790,4 +1791,38 @@ public:
     return root;
   }
 };
+```
+
+## 50 [二叉树路径的最大和](https://leetcode.cn/problems/binary-tree-maximum-path-sum/?envType=study-plan-v2&envId=top-100-liked)
+
+需要遍历所有路径，求路径和最大的那个。当遍历到 current节点时,需要求其左右子树的最大路径和,则以current节点为起点的最大路径和为 current->val + max(左,右)
+
+```C++
+int ans = INT_MIN;
+int maxPathSum(TreeNode *root) {
+  if (!root) {
+    return 0;
+  }
+  max_path(root);
+
+  return ans;
+}
+
+// 计算以root为起点的最大路径和
+int max_path(TreeNode *root) {
+  if (root == nullptr) {
+    return 0;
+  }
+  // 左子树中的最大路径和
+  int left = std::max(max_path(root->left), 0);
+  // 右子树中的最大路径和
+  int right = std::max(max_path(root->right), 0);
+  // 选择一条最大的路径
+  // 1. 如果左右子树有小于0的结果，直接丢弃
+  // 2. 如果都大于0， 左右子树都添加到结果中
+  ans = std::max(ans, root->val + left + right);
+
+  // 以当前节点为起点的路径，最大值要选择一个子树
+  return root->val + std::max(left, right);
+}
 ```
