@@ -65,6 +65,7 @@
   - [48 二叉树所有路径和](#48-二叉树所有路径和)
     - [暴力求解](#暴力求解-1)
     - [前缀和](#前缀和)
+  - [49 二叉树的最近公共祖先](#49-二叉树的最近公共祖先)
 
 # leetcode100
 
@@ -1755,5 +1756,38 @@ public:
 private:
   // 保存从root->node(k) 的所有前缀和 key:前缀和 val:频次
   std::unordered_map<int64_t, int> prefix_ = {{0, 1}};
+};
+```
+
+## 49 [二叉树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/description/?envType=study-plan-v2&envId=top-100-liked)
+
+理解公共祖先的定义(root时p q的公共祖先):
+- p q分别位于 root的左右子树中
+- p = root, q位于root的左(右)子树中; q = root, p 位于root的左(右)子树中
+
+```C++
+class Solution {
+public:
+  TreeNode *lowestCommonAncestor(TreeNode *root, TreeNode *p, TreeNode *q) {
+    // p q有一个节点等于root时，则公共节点就是root
+    if (!root || p == root || q == root) {
+      return root;
+    }
+
+    // 求左子树中p q的公共祖先
+    auto *left = lowestCommonAncestor(root->left, p, q);
+    auto *right = lowestCommonAncestor(root->right, p, q);
+
+    // 左子树中p q不存在公共祖先,则返回右子树
+    if (!left) {
+      return right;
+    }
+    // 右子树中p q不存在公共祖先,则返回左子树
+    if (!right) {
+      return left;
+    }
+    // 左右子树中p q的公共祖先都不为空,则返回 两个子树的根节点root
+    return root;
+  }
 };
 ```
