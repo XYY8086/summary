@@ -69,6 +69,7 @@
   - [50 二叉树路径的最大和](#50-二叉树路径的最大和)
   - [51 岛屿的数量](#51-岛屿的数量)
   - [52 腐烂的橘子](#52-腐烂的橘子)
+  - [53 课程表](#53-课程表)
 
 # leetcode100
 
@@ -1935,3 +1936,60 @@ int orangesRotting(std::vector<std::vector<int>> &grid) {
   return fresh_num == 0 ? res - 1 : -1;
 }
 ```
+
+## 53 [课程表](https://leetcode.cn/problems/course-schedule/description/?envType=study-plan-v2&envId=top-100-liked)
+
+本质是检测有向图是否存在。依次遍历每个节点-边的关系,标记正在访问的节点状态为1,已经访问的节点状态为2,未访问节点状态为0.
+
+在当遍历时出现某节点状态为1时表示出现重复
+
+![有向图判环](./leetcode/img/有向图判环.png)
+
+```C++
+class Solution {
+public:
+  enum VisitedStatus { kNotVisited = 0, kVisiting = 1, kVisited = 2 };
+
+  bool canFinish(int numCourses, std::vector<std::vector<int>> &prerequisites) {
+    graph.resize(numCourses);
+    visited_.resize(numCourses);
+    for (auto elements : prerequisites) {
+      graph[elements[0]].push_back(elements[1]);
+    }
+    // 检测图graph是否存在环
+    for (int index = 0; index < graph.size(); ++index) {
+      if (visited_[index] == VisitedStatus::kNotVisited && hasCycle(index)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool hasCycle(int index) {
+    visited_[index] = VisitedStatus::kVisiting;
+    // 检查节点的依赖节点
+    for (int idx : graph[index]) {
+      // 再次访问到该节点,表示存在环了
+      if (visited_[idx] == VisitedStatus::kVisiting) {
+        return true;
+      }
+      if (visited_[idx] == VisitedStatus::kNotVisited && hasCycle(idx)) {
+        return true;
+      }
+    }
+    visited_[index] = VisitedStatus::kVisited;
+    return false;
+  }
+
+private:
+  /*
+  1这个节点依赖 0,2,3
+  2这个节点依赖 4
+    1: {0,2,3}
+    2: {4}
+  */
+  std::vector<std::vector<int>> graph;
+  std::vector<VisitedStatus> visited_;
+};
+```
+
