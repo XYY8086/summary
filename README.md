@@ -72,6 +72,7 @@
   - [53 课程表](#53-课程表)
   - [54 前缀树](#54-前缀树)
   - [55 全排列](#55-全排列)
+  - [56 子集](#56-子集)
 
 # leetcode100
 
@@ -1941,11 +1942,11 @@ int orangesRotting(std::vector<std::vector<int>> &grid) {
 
 ## 53 [课程表](https://leetcode.cn/problems/course-schedule/description/?envType=study-plan-v2&envId=top-100-liked)
 
+![有向图判环](./leetcode/img/有向图判环.png)
+
 本质是检测有向图是否存在。依次遍历每个节点-边的关系,标记正在访问的节点状态为1,已经访问的节点状态为2,未访问节点状态为0.
 
 在当遍历时出现某节点状态为1时表示出现重复
-
-![有向图判环](./leetcode/img/有向图判环.png)
 
 ```C++
 class Solution {
@@ -2097,6 +2098,33 @@ public:
       // 回溯
       path.pop_back();
       visited[index] = false;
+    }
+  }
+};
+```
+
+## 56 [子集](https://leetcode.cn/problems/subsets/description/?envType=study-plan-v2&envId=top-100-liked)
+
+![子集](./leetcode/img/subsets.png)
+
+相比于全排列,需要进行去重。
+```C++
+class Solution {
+public:
+  std::vector<std::vector<int>> ret;
+  std::vector<std::vector<int>> subsets(std::vector<int> &nums) {
+    std::vector<int> path;
+    subsets(nums, path, 0);
+    return ret;
+  }
+
+  void subsets(const std::vector<int> &nums, std::vector<int> &path,
+               int last_index) {
+    ret.push_back(path);
+    for (int index = last_index; index < nums.size(); ++index) {
+      path.push_back(nums[index]);
+      subsets(nums, path, index + 1);
+      path.pop_back();
     }
   }
 };
