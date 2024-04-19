@@ -73,6 +73,7 @@
   - [54 前缀树](#54-前缀树)
   - [55 全排列](#55-全排列)
   - [56 子集](#56-子集)
+  - [57 电话号码的排列组合](#57-电话号码的排列组合)
 
 # leetcode100
 
@@ -2127,5 +2128,46 @@ public:
       path.pop_back();
     }
   }
+};
+```
+
+## 57 [电话号码的排列组合](https://leetcode.cn/problems/letter-combinations-of-a-phone-number/description/?envType=study-plan-v2&envId=top-100-liked)
+
+解法和全排列类似
+
+```C++
+class Solution {
+public:
+  std::vector<std::string> ret;
+  std::vector<std::string> letterCombinations(std::string digits) {
+    if(digits.empty()){return {};}
+    std::string path;
+    letterCombinations(digits, path, 0);
+    return ret;
+  }
+
+  void letterCombinations(const std::string &digits, std::string &path,
+                          int index) {
+    if (path.size() == digits.size()) {
+      ret.push_back(path);
+      return;
+    }
+
+    std::vector<char> res = characters[digits[index]];
+
+    for (char ch : res) {
+      path.push_back(ch);
+      letterCombinations(digits, path, index + 1);
+      path.pop_back();
+    }
+  }
+
+private:
+  std::unordered_map<char, std::vector<char>> characters{
+      {'2', {'a', 'b', 'c'}}, {'3', {'d', 'e', 'f'}},
+      {'4', {'g', 'h', 'i'}}, {'5', {'j', 'k', 'l'}},
+      {'6', {'m', 'n', 'o'}}, {'7', {'p', 'q', 'r', 's'}},
+      {'8', {'t', 'u', 'v'}}, {'9', {'w', 'x', 'y', 'z'}},
+  };
 };
 ```
