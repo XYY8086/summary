@@ -74,6 +74,7 @@
   - [55 全排列](#55-全排列)
   - [56 子集](#56-子集)
   - [57 电话号码的排列组合](#57-电话号码的排列组合)
+  - [58 组合总数](#58-组合总数)
 
 # leetcode100
 
@@ -2169,5 +2170,45 @@ private:
       {'6', {'m', 'n', 'o'}}, {'7', {'p', 'q', 'r', 's'}},
       {'8', {'t', 'u', 'v'}}, {'9', {'w', 'x', 'y', 'z'}},
   };
+};
+```
+
+## 58 [组合总数](https://leetcode.cn/problems/combination-sum/description/?envType=study-plan-v2&envId=top-100-liked)
+
+- 路径不能重复,所以每次选择下一个节点时,要大于等于自身节点位置
+- 同一元素可以被多次选择 -> 迭代时起始下标一直是 index
+
+```C++
+class Solution {
+public:
+  std::vector<std::vector<int>> ret;
+  std::vector<std::vector<int>> combinationSum(std::vector<int> &candidates,
+                                               int target) {
+    std::sort(candidates.begin(), candidates.end());
+    std::vector<int> path;
+    combinationSum(candidates, path, target, 0, 0);
+    return ret;
+  }
+
+  void combinationSum(const std::vector<int> &candidates,
+                      std::vector<int> &path, int target, int current,
+                      int pos) {
+    if (target == current) {
+      ret.push_back(path);
+      return;
+    }
+
+    if (current > target) {
+      return;
+    }
+    // 题目要求是不能重复的,这里这里遍历会已知向前遍历
+    for (int index = pos; index < candidates.size(); ++index) {
+      path.push_back(candidates[index]);
+      // 同一个元素可以多次选择,所以这里index迭代时没有进行+1
+      combinationSum(candidates, path, target, current + candidates[index],
+                     index);
+      path.pop_back();
+    }
+  }
 };
 ```
