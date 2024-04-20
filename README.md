@@ -75,6 +75,7 @@
   - [56 子集](#56-子集)
   - [57 电话号码的排列组合](#57-电话号码的排列组合)
   - [58 组合总数](#58-组合总数)
+  - [59 有效的括号](#59-有效的括号)
 
 # leetcode100
 
@@ -2207,6 +2208,43 @@ public:
       // 同一个元素可以多次选择,所以这里index迭代时没有进行+1
       combinationSum(candidates, path, target, current + candidates[index],
                      index);
+      path.pop_back();
+    }
+  }
+};
+```
+
+## 59 [有效的括号](https://leetcode.cn/problems/generate-parentheses/description/?envType=study-plan-v2&envId=top-100-liked)
+
+本质也是排列, 需要注意剪枝的条件。合理的括号: 先左后右, 左括号数量不小于右括号数量
+```C++
+class Solution {
+public:
+  std::vector<std::string> ret;
+  std::vector<std::string> generateParenthesis(int n) {
+    std::string path;
+    generateParenthesis(n, path, 0, 0);
+    return ret;
+  }
+
+  void generateParenthesis(int n, std::string &path, int left, int right) {
+    if (left == n && right == n) {
+      ret.push_back(path);
+    }
+    // 左括号数量一定不小于右括号数量
+    if (right > left) {
+      return;
+    }
+    // 还有左括号可以使用
+    if (left < n) {
+      path.push_back('(');
+      generateParenthesis(n, path, left + 1, right);
+      path.pop_back();
+    }
+    // 还有右括号可以使用
+    if (right < n) {
+      path.push_back(')');
+      generateParenthesis(n, path, left, right + 1);
       path.pop_back();
     }
   }
