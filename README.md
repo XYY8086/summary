@@ -80,6 +80,7 @@
   - [61 分割回文串](#61-分割回文串)
   - [62 N皇后](#62-n皇后)
   - [63 寻找插入位置](#63-寻找插入位置)
+  - [64 在排序2维数组中寻找目标值](#64-在排序2维数组中寻找目标值)
 
 # leetcode100
 
@@ -2424,5 +2425,33 @@ int searchInsert(std::vector<int> &nums, int target) {
   }
   // 因为left位置的值一定是不大于target的,所以这里直接返回left
   return left;
+}
+```
+
+## 64 [在排序2维数组中寻找目标值](https://leetcode.cn/problems/search-a-2d-matrix/description/?envType=study-plan-v2&envId=top-100-liked)
+
+- 已知当前的坐标为(m,n ) 因为m * col + n = pos, 已知pos col的情况下, m = pos / col , n = pos % col
+
+```C++
+bool searchMatrix(std::vector<std::vector<int>> &matrix, int target) {
+  if (matrix.empty()) {
+    return false;
+  }
+  int row = matrix.size(), col = matrix[0].size();
+  // m * col + n = pos, 已知pos col的情况下, m = pos / col , n = pos % col
+  int sum = row * col;
+  int left = 0, right = sum - 1;
+  while (left <= right) {
+    int mid = (left + right) / 2;
+    if (matrix[mid / col][mid % col] == target) {
+      return true;
+    }
+    if (matrix[mid / col][mid % col] > target) {
+      right = mid - 1;
+    } else {
+      left = mid + 1;
+    }
+  }
+  return false;
 }
 ```
