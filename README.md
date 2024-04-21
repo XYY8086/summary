@@ -78,6 +78,7 @@
   - [59 有效的括号](#59-有效的括号)
   - [60 2维矩阵中搜索单词](#60-2维矩阵中搜索单词)
   - [61 分割回文串](#61-分割回文串)
+  - [62 N皇后](#62-n皇后)
 
 # leetcode100
 
@@ -2350,3 +2351,54 @@ private:
 };
 ```
 
+## 62 [N皇后](https://leetcode.cn/problems/n-queens/description/?envType=study-plan-v2&envId=top-100-liked)
+
+- 如何判断当前位置是否可以放置,需要借助一个path数组,直接在queen上判断比较麻烦
+
+```C++
+class Solution {
+public:
+  std::vector<std::vector<std::string>> solveNQueens(int n) {
+    std::vector<std::string> queen(n, std::string(n, '.'));
+    std::vector<int> path;
+    solveNQueens(n, 0, queen, path);
+    return ret;
+  }
+
+private:
+  void solveNQueens(int total_n, int current, std::vector<std::string> &queen,
+                    std::vector<int> &path) {
+    // 最后一行成功放置,获取一条记录
+    if (current == total_n) {
+      ret.push_back(queen);
+      return;
+    }
+    // 遍历当前行所有位置,依次遍历所有可能的位置
+    std::string &row = queen[current];
+    for (int index = 0; index < row.size(); ++index) {
+      if (is_valid_pos(current, index, path)) {
+        // 当前是可以放置的位置
+        row[index] = 'Q';
+        path.push_back(index);
+        solveNQueens(total_n, current + 1, queen, path);
+        path.pop_back();
+        row[index] = '.';
+      }
+    }
+  }
+
+  bool is_valid_pos(int row, int col, const std::vector<int> &path) {
+    // path的location实际就是行信息, 斜边上的位置满足 |row -m| = |col - n|
+    for (int _row = 0; _row < path.size(); ++_row) {
+      int _col = path[_row];
+      if (_row == row || _col == col ||
+          std::abs(row - _row) == std::abs(col - _col)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  std::vector<std::vector<std::string>> ret;
+};
+```
