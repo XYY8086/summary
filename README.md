@@ -79,6 +79,7 @@
   - [60 2维矩阵中搜索单词](#60-2维矩阵中搜索单词)
   - [61 分割回文串](#61-分割回文串)
   - [62 N皇后](#62-n皇后)
+  - [63 寻找插入位置](#63-寻找插入位置)
 
 # leetcode100
 
@@ -2401,4 +2402,27 @@ private:
 
   std::vector<std::vector<std::string>> ret;
 };
+```
+
+## 63 [寻找插入位置](https://leetcode.cn/problems/search-insert-position/description/?envType=study-plan-v2&envId=top-100-liked)
+
+实际上就是查找第一个小于或等于target值的位置
+
+```C++
+int searchInsert(std::vector<int> &nums, int target) {
+  int left = 0, right = nums.size() - 1;
+  while (left <= right) {
+    int mid = left + ((right - left) >> 1);
+    if (target == nums[mid]) {
+      return mid;
+    }
+    if (nums[mid] > target) {
+      right = mid - 1;
+    } else {
+      left = mid + 1;
+    }
+  }
+  // 因为left位置的值一定是不大于target的,所以这里直接返回left
+  return left;
+}
 ```
