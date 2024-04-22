@@ -82,6 +82,7 @@
   - [63 寻找插入位置](#63-寻找插入位置)
   - [64 在排序2维数组中寻找目标值](#64-在排序2维数组中寻找目标值)
   - [65 在排序数组中查找元素的第一个和最后一个位置](#65-在排序数组中查找元素的第一个和最后一个位置)
+  - [66 搜索旋转排序数组](#66-搜索旋转排序数组)
 
 # leetcode100
 
@@ -2473,6 +2474,43 @@ int lower_bound_search(std::vector<int> &nums, int target) {
       // 当前位置等于target && 左边的值不等于target
       if (mid == 0 || nums[mid - 1] != target) {
         return mid;
+      } else {
+        right = mid - 1;
+      }
+    }
+  }
+  return -1;
+}
+```
+
+## 66 [搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/description/?envType=study-plan-v2&envId=top-100-liked)
+
+- 在旋转数组中进行2分,肯定右一个区间是有序的
+- 判断是否是有序区间的条件，例如对于左区间 `nums[left] <= nums[mid]`
+
+```C++
+int search(std::vector<int> &nums, int target) {
+  int left = 0, right = nums.size() - 1;
+  while (left <= right) {
+    int mid = left + ((right - left) >> 1);
+    if (nums[mid] == target) {
+      return mid;
+    }
+    // [left, mid] [mid, right] 中一定存在一个有序的区间
+    // [left, mid] 是有序的
+    if (nums[left] <= nums[mid]) {
+      // target 在 [left, mid), 移动right指针
+      if (nums[left] <= target && nums[mid] > target) {
+        right = mid - 1;
+      } else {
+        // target 在右侧区间内,移动left
+        left = mid + 1;
+      }
+    } else {
+      // [mid, right] 是有序的
+      // target 在 (mid, right], 移动right指针
+      if (nums[mid] < target && nums[right] >= target) {
+        left = mid + 1;
       } else {
         right = mid - 1;
       }
