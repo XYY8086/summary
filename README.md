@@ -84,6 +84,9 @@
   - [65 在排序数组中查找元素的第一个和最后一个位置](#65-在排序数组中查找元素的第一个和最后一个位置)
   - [66 搜索旋转排序数组](#66-搜索旋转排序数组)
   - [67 在旋转数组中寻找最小值](#67-在旋转数组中寻找最小值)
+  - [68 在排序数组中寻找中位数](#68-在排序数组中寻找中位数)
+  - [69 有效的括号](#69-有效的括号)
+  - [70 包含最小元素的栈](#70-包含最小元素的栈)
 
 # leetcode100
 
@@ -2563,4 +2566,71 @@ int findMin(std::vector<int> &nums) {
   }
   return nums[left];
 }
+```
+
+## 68 [在排序数组中寻找中位数](https://leetcode.cn/problems/median-of-two-sorted-arrays/description/?envType=study-plan-v2&envId=top-100-liked)
+
+
+**待补充**
+
+## 69 [有效的括号](https://leetcode.cn/problems/valid-parentheses/description/?envType=study-plan-v2&envId=top-100-liked)
+栈中报错左括号,当遇到右括号时检查是否与左括号匹配
+
+```C++
+// ()[]{}
+bool isValid(std::string s) {
+  if (s.empty()) {
+    return false;
+  }
+  std::unordered_map<char, char> char_map{{'(', ')'}, {'[', ']'}, {'{', '}'}};
+  std::stack<char> q;
+  for (int index = 0; index < s.size(); ++index) {
+    if (char_map.count(s[index])) {
+      // 当前时左括号,直接入栈
+      q.push(s[index]);
+      continue;
+    }
+    // 当前是右括号
+    if (q.empty()) {
+      return false;
+    }
+    char current = q.top();
+    // 当前右括号和上一个左括号步匹配
+    if (char_map[current] != s[index]) {
+      return false;
+    }
+    q.pop();
+  }
+  return q.empty();
+}
+```
+
+## 70 [包含最小元素的栈](https://leetcode.cn/problems/min-stack/description/?envType=study-plan-v2&envId=top-100-liked)
+
+辅助栈中报错的时当前数据栈中最小的元素。
+
+```C++
+class MinStack {
+public:
+  MinStack() {}
+
+  void push(int val) {
+    vals.push(val);
+    // 当前值如果小于栈顶元素则入栈，否则copy栈顶元素
+    minis.push(minis.empty() ? val : std::min(minis.top(), val));
+  }
+
+  void pop() {
+    vals.pop();
+    minis.pop();
+  }
+
+  int top() { return vals.top(); }
+
+  int getMin() { return minis.top(); }
+
+private:
+  std::stack<int> vals;
+  std::stack<int> minis; // 存放当前最小值
+};
 ```
