@@ -259,7 +259,7 @@ int subarraySum(vector<int> &nums, int k) {
 那么我们想到计算一次保存起来dp[i] 表示[i, END] i开始到结尾的子序列和。
 **若存在一个区间 [i,j]的和为t,则右这样的关系 dp[i]-dp[j]+nums[j]=t,其中 i<=j**,那么显然我们从后向前遍历一次即可
 
-![[i,j]区间的和](./leetcode/img/连续子序列和.png)
+![[i,j]区间的和](./img/连续子序列和.png)
 
 
 ```C++
@@ -506,7 +506,7 @@ int maxSubArray(vector<int>& nums) {
 
 ### 内存拷贝
 
-![内存拷贝](./leetcode/img/轮转数组.png)
+![内存拷贝](./img/轮转数组.png)
 
 需要提前将尾部的数据保存起来。
 ```C++
@@ -789,7 +789,7 @@ void rotate(std::vector<std::vector<int>> &matrix) {
 
 ## 22 [相交链表](https://leetcode.cn/problems/intersection-of-two-linked-lists/description/?envType=study-plan-v2&envId=top-100-liked)
 
-![相交链表示意图](./leetcode/img/相交链表.png)
+![相交链表示意图](./img/相交链表.png)
 
 ```C++
 if(!headA || !headB){return nullptr;}
@@ -805,7 +805,7 @@ return ptr1;
 
 ![反转链表](https://assets.leetcode.com/uploads/2021/02/19/rev1ex1.jpg)
 
-![反转链表](./leetcode/img/反转链表.png)
+![反转链表](./img/反转链表.png)
 
 从前往后,每次修改一个指针的指向
 ```C++
@@ -852,7 +852,7 @@ ListNode *reverseList(ListNode *head) {
 那么能否不使用额外的内存空间呢?
 我们可以反转链表的后半段,然后依次判断前后两个半段的值是否相同。其中我们需要解决如何找到开始反转的中间节点，这里可以使用快慢指针，快指针到尾部时，慢指针走到中间。
 
-![回文链表](./leetcode/img/回文链表.png)
+![回文链表](./img/回文链表.png)
 
 ```C++
 bool isPalindrome(ListNode *head) {
@@ -903,7 +903,7 @@ bool hasCycle(ListNode *head) {
 
 关键在于找到相遇点后如何判断环的入口在哪里? 
 
-![环的入口](./leetcode/img/环形链表的入口.png)
+![环的入口](./img/环形链表的入口.png)
 
 ```C++
 ListNode *detectCycle(ListNode *head) {
@@ -1020,7 +1020,7 @@ ListNode *removeNthFromEnd(ListNode *head, int n) {
 
 ![两两交换链表节点](https://assets.leetcode.com/uploads/2020/10/03/swap_ex1.jpg)
 
-![交换思路](./leetcode/img/两两交换链表节点.png)
+![交换思路](./img/两两交换链表节点.png)
 ```C++
 ListNode *swapPairs1(ListNode *head) {
   if (head == nullptr || head->next == nullptr) {
@@ -1103,7 +1103,7 @@ ListNode *reverseKGroup(ListNode *head, int k) {
 
 如果不使用map，如何表达新旧节点之间的关系，或者说如何根据旧节点定位到新节点呢?
 我们可以借助链表前后关系的表示能力，将新的节点插入到原节点后面，这样random节点的对照关系就明确了。
-![复杂链表复制](./leetcode/img/复杂链表的复制.png)
+![复杂链表复制](./img/复杂链表的复制.png)
 
 ```C++
 Node *copyRandomList(Node *head) {
@@ -1637,7 +1637,7 @@ void flatten(TreeNode *root) {
 
 ### 遍历的同时修改节点
 
-![一边遍历一边连接](./leetcode/img/二叉树展开为链表.png)
+![一边遍历一边连接](./img/二叉树展开为链表.png)
 
 ```C++
 void flatten(TreeNode *root) {
@@ -1957,7 +1957,7 @@ int orangesRotting(std::vector<std::vector<int>> &grid) {
 
 ## 53 [课程表](https://leetcode.cn/problems/course-schedule/description/?envType=study-plan-v2&envId=top-100-liked)
 
-![有向图判环](./leetcode/img/有向图判环.png)
+![有向图判环](./img/有向图判环.png)
 
 本质是检测有向图是否存在。依次遍历每个节点-边的关系,标记正在访问的节点状态为1,已经访问的节点状态为2,未访问节点状态为0.
 
@@ -2120,7 +2120,7 @@ public:
 
 ## 56 [子集](https://leetcode.cn/problems/subsets/description/?envType=study-plan-v2&envId=top-100-liked)
 
-![子集](./leetcode/img/subsets.png)
+![子集](./img/subsets.png)
 
 相比于全排列,需要进行去重。
 ```C++
